@@ -7,7 +7,6 @@ import java.util.List;
 public class CBazas 
 {
 	private List<CCartas> Baza;
-	private eJugadores BazaPareja;
 	
 	public void setBaza(List<CCartas> baza)
 	{
@@ -17,17 +16,9 @@ public class CBazas
 	{
 		return Baza;
 	}
-	public void setBazaPareja(eJugadores bazaPareja) {
-		BazaPareja = bazaPareja;
-	}
-	public eJugadores getBazaPareja() {
-		return BazaPareja;
-	}
-	
-	public CBazas(eJugadores J)
+	public CBazas()
 	{
-		BazaPareja=J;
-		Baza=new ArrayList<CCartas>();		
+		Baza=new ArrayList<CCartas>();
 	}
 	public int CuentaPuntos(boolean diezUltimas)
 	{
