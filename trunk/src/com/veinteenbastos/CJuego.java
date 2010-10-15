@@ -8,25 +8,26 @@ class CJugador
 	private String Nombre;
 	private int NumeroJugador;
 	private boolean Real;
-	public CJugador()
-	{			
-	}
+	private CMano mano;
 	public CJugador(String n,int nj,boolean r)
 	{
 		setNombre(n);
 		setNumeroJugador(nj);
 		setReal(r);
+		setMano(new CMano());
 	}
 	private void setNombre(String nombre) {
 		Nombre = nombre;
 	}
-	private String getNombre() {
+	private String getNombre() 
+	{
 		return Nombre;
 	}
 	private void setNumeroJugador(int numeroJugador) {
 		NumeroJugador = numeroJugador;
 	}
-	private int getNumeroJugador() {
+	private int getNumeroJugador() 
+	{
 		return NumeroJugador;
 	}
 	private void setReal(boolean real) {
@@ -35,8 +36,19 @@ class CJugador
 	private boolean isReal() {
 		return Real;
 	}
+	/**
+	 * @param mano the mano to set
+	 */
+	public void setMano(CMano mano) {
+		this.mano = mano;
+	}
+	/**
+	 * @return the mano
+	 */
+	public CMano getMano() {
+		return mano;
+	}
 }
-
 class CPareja
 {
 	private CJugador JugadorA;
@@ -50,7 +62,7 @@ class CPareja
 		setJugadorB(b);
 		setPuntos(0);
 		setBaza(new CBazas());		
-	}
+	}	
 	public void setJugadorA(CJugador jugadorA) {
 		JugadorA = jugadorA;
 	}
@@ -87,35 +99,41 @@ class CPareja
 
 public class CJuego 
 {
-	private List<CMano> Manos;	
 	private List<CBazas> Bazas;
+	private CPareja ParejaPar;
+	private CPareja ParejaImpar;
+	private CBaraja baraja;
+	private CCartas CartaTriunfo;	
+	
 	public CJuego()
 	{
-		setManos(new ArrayList<CMano>(4));	
-		setBazas(new ArrayList<CBazas>(2));	
-	}
-	public void setJugador(int numJugador)
-	{
+		setBazas(new ArrayList<CBazas>(2));
+		setParejaPar(new CPareja(new CJugador("Jugador2", 2, false),new CJugador("Jugador4",4,false)));
+		setParejaImpar(new CPareja(new CJugador("Jugador1", 1, false),new CJugador("Jugador3",3,false)));
+		baraja=new CBaraja(false, true, true);
 		
-	}
-	/**
-	 * @param manos the manos to set
-	 */
-	public void setManos(List<CMano> manos) {
-		Manos = manos;
-	}
-
-	/**
-	 * @return the manos
-	 */
-	public List<CMano> getManos() {
-		return Manos;
 	}
 	public void setBazas(List<CBazas> bazas) {
 		Bazas = bazas;
 	}
 	public List<CBazas> getBazas() {
 		return Bazas;
+	}
+	public void setParejaPar(CPareja parejaPar) {
+		ParejaPar = parejaPar;
+	}
+	public CPareja getParejaPar() {
+		return ParejaPar;
+	}
+	public void setParejaImpar(CPareja parejaImpar) {
+		ParejaImpar = parejaImpar;
+	}
+	public CPareja getParejaImpar() {
+		return ParejaImpar;
+	}
+	public void repartir(int quien)	
+	{
+		
 	}
 
 }
