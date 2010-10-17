@@ -24,6 +24,10 @@ public class CMano
 		Cartas.remove(c);
 		return c;				
 	}
+	public void AddCarta(CCartas carta)
+	{
+		Cartas.add(carta);
+	}
 	private CCartas DecidirCarta() 
 	{
 		return null;
