@@ -26,9 +26,25 @@ public class CBaraja
 			CortarBaraja();
 		}
 	}
-	private void CortarBaraja()
+	public void CortarBaraja()
 	{	
 		int iPunto = (int)(Math.random()*40);
+		int Contador=0;		
+		for(int i=iPunto;i<40;i++)
+		{
+			Baraja.get(i).peso=Contador;
+			Contador++;			
+		}
+		for(int i=0;i<iPunto;i++)
+		{
+			Baraja.get(i).peso=Contador;
+			Contador++;			
+		}				
+		OrdenarBaraja();
+	}
+	public void CortarBaraja(int numero)
+	{	
+		int iPunto =numero;
 		int Contador=0;		
 		for(int i=iPunto;i<40;i++)
 		{
@@ -66,7 +82,7 @@ public class CBaraja
 			}
 		}
 	}
-	private void Barajar()
+	public void Barajar()
 	{		
 	
 		Iterator<CCartas> itr = Baraja.iterator();
@@ -95,6 +111,12 @@ public class CBaraja
 		int iAleatorio = (int)(Math.random()*10000);
 		return (int) Math.abs(Math.sqrt(Math.tanh(iAleatorio*iPalo/iCarta)));				
 					
+	}
+	public CCartas DamePrimeraCarta()
+	{
+		CCartas c=Baraja.get(0);
+		Baraja.remove(0);
+		return c;
 	}
 	
 	

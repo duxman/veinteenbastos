@@ -110,7 +110,7 @@ public class CJuego
 		setBazas(new ArrayList<CBazas>(2));
 		setParejaPar(new CPareja(new CJugador("Jugador2", 2, false),new CJugador("Jugador4",4,false)));
 		setParejaImpar(new CPareja(new CJugador("Jugador1", 1, false),new CJugador("Jugador3",3,false)));
-		baraja=new CBaraja(false, true, true);
+		baraja=new CBaraja(false, true, true);		
 		
 	}
 	public void setBazas(List<CBazas> bazas) {
@@ -131,9 +131,55 @@ public class CJuego
 	public CPareja getParejaImpar() {
 		return ParejaImpar;
 	}
+	private CPareja quePareja(int jugador)
+	{
+		if (jugador%2!=0)
+			return ParejaImpar;
+		  else
+			  return ParejaPar;
+	}
+	private CJugador queJugador(int jugador)
+	{
+		if (jugador%2!=0)
+		{
+			if(jugador==1)
+				return ParejaImpar.getJugadorA();
+			else
+				return ParejaImpar.getJugadorB();
+		}			
+		else
+		{
+			if(jugador==2)
+				return ParejaPar.getJugadorA();
+			else
+				return ParejaPar.getJugadorB();
+		}
+	}
 	public void repartir(int quien)	
 	{
-		
+		int jugador=quien;
+		for(int itandas=1;itandas<3;itandas++)	
+		{			
+			for(int ijugadores=1;ijugadores<5;ijugadores++)
+			{
+				if(jugador>4)
+				{
+					jugador=1;
+				}
+				for(int icartas=1;icartas<4;icartas++)	
+				{						
+					queJugador(jugador).getMano().AddCarta(baraja.DamePrimeraCarta());					
+				}
+				jugador++;
+			}
+		}		
+		CartaTriunfo=baraja.DamePrimeraCarta();			
+	}
+	public void setCartaTriunfo(CCartas cartaTriunfo) {
+		CartaTriunfo = cartaTriunfo;
+	}
+	public CCartas getCartaTriunfo() {
+		return CartaTriunfo;
 	}
 
 }
