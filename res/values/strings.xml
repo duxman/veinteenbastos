@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
+    <string name="Duxman">apodo</string>
     <string name="hello">Hello World</string>
     <string name="app_name">Veinte en bastos y el Copon</string>
 </resources>
