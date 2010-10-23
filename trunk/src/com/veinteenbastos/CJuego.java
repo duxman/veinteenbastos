@@ -1,6 +1,7 @@
 package com.veinteenbastos;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 class CJugador
@@ -162,10 +163,9 @@ public class CJuego
 		{			
 			for(int ijugadores=1;ijugadores<5;ijugadores++)
 			{
-				if(jugador>4)
-				{
-					jugador=1;
-				}
+				
+				
+				jugador=(jugador>4)?(ijugadores+jugador-5):(ijugadores+jugador-1);	
 				for(int icartas=1;icartas<4;icartas++)	
 				{						
 					queJugador(jugador).getMano().AddCarta(baraja.DamePrimeraCarta());					
@@ -173,7 +173,26 @@ public class CJuego
 				jugador++;
 			}
 		}		
-		CartaTriunfo=baraja.DamePrimeraCarta();			
+		setCartaTriunfo(baraja.DamePrimeraCarta());			
+	}
+	public void jugada(int Mano)
+	{
+		int jugador=Mano;
+		CJugada j = new CJugada(ePalos.GetPalo(getCartaTriunfo().palo),Mano);
+		for(int i =1;i<5;i++)
+		{
+			jugador=(jugador>4)?(i+jugador-5):(i+jugador-1);	
+			j.Add(jugador, queJugador(Mano).getMano().TirarCarta());
+			jugador++;
+		}
+		int idquiengana=j.QuienGana();
+		Iterator<CCartas> itr = j.getCartas().iterator();
+        while(itr.hasNext())
+        {
+        	CCartas c = (CCartas)itr.next();
+        	quePareja(idquiengana).getBaza().getBaza().add(c);   
+        }
+        quePareja(idquiengana).setPuntos(quePareja(idquiengana).getBaza().CuentaPuntos(false));   
 	}
 	public void setCartaTriunfo(CCartas cartaTriunfo) {
 		CartaTriunfo = cartaTriunfo;
