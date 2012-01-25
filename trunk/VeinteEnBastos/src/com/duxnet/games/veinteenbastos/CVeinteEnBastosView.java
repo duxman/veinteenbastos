@@ -21,30 +21,37 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
 	private static final int BMP_COLUMNS = 10;
 	private int AltoCarta;
 	private int AnchoCarta;
+	private int AltoScreen;
+	private int AnchoScreen;
 	
 	private CBaraja BarajaCompleta;
 	private CMano Mano;
 	private Bitmap bmpBarajaCompleta;
 	private Bitmap bmpFondoCarta;
+	private Bitmap bmpTapete;
 	private SurfaceHolder holder;
 	//private GameLoopThread gameLoopThread;	
 	private int cartaAct;
 	
-	public CVeinteEnBastosView(Context context) 
+	public CVeinteEnBastosView(Context context,int altoscr,int anchoscr) 
 	{
 		super(context);
 	
 
 		//gameLoopThread = new GameLoopThread(this);
+		AltoScreen=altoscr;
+		AnchoScreen=anchoscr;
 		holder = getHolder();
         holder.addCallback(this);
         CargarGraficos();
         cartaAct=0;
+     
 	}
 	public void CargarGraficos()
 	{
 		bmpBarajaCompleta = BitmapFactory.decodeResource(getResources(),R.drawable.baraja);
-		bmpFondoCarta=BitmapFactory.decodeResource(getResources(),R.drawable.detras);
+		bmpFondoCarta=BitmapFactory.decodeResource(getResources(),R.drawable.detras);		
+		bmpTapete=Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.tapete),AnchoScreen ,AltoScreen, true);	
 		AltoCarta=(bmpBarajaCompleta.getHeight() / BMP_ROWS);
 		AnchoCarta=(bmpBarajaCompleta.getWidth() / BMP_COLUMNS);
 	}
@@ -115,6 +122,7 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
     {
 		float x = event.getX();
         float y = event.getY();
+        
         boolean tocada=false;
         CCarta c;
 		synchronized (getHolder()) 
@@ -130,9 +138,17 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
 		    	c=iterador.next();
 		    	if(c.Tocada(x, y))
 		    	{
-		    		tocada=true;
-		    		Mano.getCartas().remove(c);
-		    		render(c);
+		    		if(c.isMarcada())
+		    		{
+		    			tocada=true;
+		    			Mano.getCartas().remove(c);
+		    			render(c);
+		    		}
+		    		else
+		    		{		    	
+		    			tocada=true;
+		    			render(c);
+		    		}
 		    	}
 		    }
 		    if(!tocada)	render();
@@ -141,25 +157,29 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
     }
     protected void onDraw(Canvas canvas,CCarta carta) 
     {      
-    	int posX=10;
-    	int posY=10;
-    	canvas.drawColor(Color.GREEN);
     	
+    	canvas.drawColor(Color.rgb(51,102,51));
+    	canvas.drawBitmap(bmpTapete, 0,0 , null);
+    	
+    	if(carta!=null && Mano.getCartas().indexOf(carta)<0)
+    	{    		    		    			    	
+    		carta.Pintar(true, canvas,AltoCarta,AnchoCarta,190,190);
+    	}
     	if(Mano.getCartas().size()>0)
     	{
-    		Mano.OrdenarMano();
-    		Mano.Pintar(true,canvas,AltoCarta,AnchoCarta,posX,posY);
+    		int posX=20;
+        	int posY=20;
+    		Mano.OrdenarMano();    		
+    		Mano.Pintar(true,canvas,AltoCarta,AnchoCarta,posX,posY,Mano.getCartas().indexOf(carta));
     	}
     	if(BarajaCompleta.size()>0)
-    	{
+    	{    		
+    		int posX=20;
+        	int posY=100;
     		posY=posY+AltoCarta+10;    	
     		BarajaCompleta.Pintar(false,canvas,AltoCarta,AnchoCarta,posX,posY);
     	}
-    	if(carta!=null)
-    	{
-    		posX=posX+AnchoCarta+90;  
-    		carta.Pintar(true, canvas,AltoCarta,AnchoCarta,posX,posY);
-    	}
+    	
     	/*posX=(posX+15)+(BarajaCompleta.getAnchoCarta());
     	canvas.drawBitmap(BarajaCompleta.getCarta(cartaAct).getImagenCarta(), posX,posX+BarajaCompleta.getAnchoCarta()+150 , null);    	
     	canvas.drawText(BarajaCompleta.getCarta(cartaAct).getLog(), posX,posX+BarajaCompleta.getAnchoCarta()+150, new Paint());

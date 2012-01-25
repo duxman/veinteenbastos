@@ -44,7 +44,7 @@ public class CMano
 		return null;
 		// TODO Auto-generated method stub		
 	}
-	public void Pintar(boolean vista,Canvas canvas,int Alto,int Ancho,int X,int Y)
+	public void Pintar(boolean vista,Canvas canvas,int Alto,int Ancho,int X,int Y,int resaltar )
 	{
 		int posX=X;
     	int posY=Y;
@@ -53,11 +53,25 @@ public class CMano
 		Iterator <CCarta> iterador= Cartas.iterator();  		  
 	    while (iterador.hasNext()) 
 	    {  
-	    	posX=(int) (i*(Ancho/1.5));
-	    	CCarta c=iterador.next();
-	    	c.Pintar(vista,canvas,Alto,Ancho,posX,posY);	    	
-	    	i++;
+	    		    	
+    		posX=(int) (i*(Ancho/1.5));
+    		CCarta c=iterador.next();
+    		if(resaltar==i)
+    		{
+	    		c.Pintar(vista,canvas,Alto,Ancho,posX,posY-5);
+	    		c.setMarcada(true);
+    		}
+	    	else
+	    	{
+	    		c.Pintar(vista,canvas,Alto,Ancho,posX,posY);
+	    		c.setMarcada(false);
+	    	}    		    
+    		i++;	    	    
 	    }  
+	}
+	public void Pintar(boolean vista,Canvas canvas,int Alto,int Ancho,int X,int Y)
+	{
+		Pintar(vista,canvas,Alto,Ancho,X,Y,-1);
 	}
 	public List<Bitmap> getBitmaps()
 	{

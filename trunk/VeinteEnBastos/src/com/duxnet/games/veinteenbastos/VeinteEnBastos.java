@@ -17,10 +17,9 @@ public class VeinteEnBastos extends Activity {
         //View myText = new View(this);        
 		//myText.setText("Guiñote");	
 		//myText.setId(R.layout.main);
-        setContentView(new CVeinteEnBastosView(this));              
+        setContentView(new CVeinteEnBastosView(this,getWindowManager().getDefaultDisplay().getHeight(),getWindowManager().getDefaultDisplay().getWidth()));       
 		//addContentView(myText, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		//setContentView(R.layout.main);
         //addContentView(new CVeinteEnBastosView(this),new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));        
-
     }
 }

@@ -19,6 +19,7 @@ public class CCarta implements Comparable<Object>
 	private int posY;
 	private int Ancho;
 	private int Alto;
+	private boolean marcada;
 	
 	private eLugar DondeEsta;
 	
@@ -147,5 +148,11 @@ public class CCarta implements Comparable<Object>
     	canvas.drawBitmap(b, posX, posY, null);
     	setPosX(posX);
     	setPosY(posY);	     
+	}
+	public boolean isMarcada() {
+		return marcada;
+	}
+	public void setMarcada(boolean marcada) {
+		this.marcada = marcada;
 	}	
 }
