@@ -1,23 +1,26 @@
-/*package com.veinteenbastos;
+package com.duxnet.games.veinteenbastos;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.duxnet.games.veinteenbastos.enums.ePalo;
+
 public class CJugada 
 {
-	private List<CCartas> Cartas;
-	private ePalos triunfo;
+	private List<CCarta> Cartas;
+	private ePalo triunfo;
 	private int mano;
 	
-	public CJugada(ePalos t,int m)
+	public CJugada(ePalo t,int m)
 	{
-		setCartas(new ArrayList<CCartas>(4));
+		setCartas(new ArrayList<CCarta>(4));
 		setTriunfo(t);
 		setMano(m);
 	}
-	public CJugada(CCartas c1,CCartas c2,CCartas c3,CCartas c4,ePalos t,int m)
+	public CJugada(CCarta c1,CCarta c2,CCarta c3,CCarta c4,ePalo t,int m)
 	{
-		setCartas(new ArrayList<CCartas>(4));
+		setCartas(new ArrayList<CCarta>(4));
 		setTriunfo(t);
 		setMano(m);
 		Cartas.add(c1);
@@ -25,11 +28,11 @@ public class CJugada
 		Cartas.add(c3);
 		Cartas.add(c4);		
 	}
-	public void setTriunfo(ePalos triunfo) 
+	public void setTriunfo(ePalo triunfo) 
 	{
 		this.triunfo = triunfo;
 	}
-	public ePalos getTriunfo() 
+	public ePalo getTriunfo() 
 	{
 		return triunfo;
 	}
@@ -39,17 +42,17 @@ public class CJugada
 	public int getMano() {
 		return mano;
 	}
-	public void setCartas(List<CCartas> cartas) 
+	public void setCartas(List<CCarta> cartas) 
 	{
 		Cartas = cartas;
 	}
-	public List<CCartas> getCartas() 
+	public List<CCarta> getCartas() 
 	{
 		return Cartas;
 	}	
 
 	
-	public void Add(int pos,CCartas c)
+	public void Add(int pos,CCarta c)
 
 	{
 		Cartas.add(pos, c);	
@@ -64,11 +67,11 @@ public class CJugada
 	private int PersonaGanadora(int pos1,int pos2)
 	{
 		int rtn=0;	
-		int marca=Cartas.get(getMano()).palo;
-		int marca1=Cartas.get(pos1).palo;
-		int marca2=Cartas.get(pos2).palo;		
-		int valor1=Cartas.get(pos1).getValorCarta(getTriunfo());
-		int valor2=Cartas.get(pos2).getValorCarta(getTriunfo());
+		int marca=Cartas.get(getMano()).getPalo();
+		int marca1=Cartas.get(pos1).getPalo();
+		int marca2=Cartas.get(pos2).getPalo();		
+		int valor1=Cartas.get(pos1).getValor(getTriunfo());
+		int valor2=Cartas.get(pos2).getValor(getTriunfo());
 		
 		if(esTriunfo(marca))
 		{	
@@ -125,4 +128,3 @@ public class CJugada
 	}
 
 }
-*/

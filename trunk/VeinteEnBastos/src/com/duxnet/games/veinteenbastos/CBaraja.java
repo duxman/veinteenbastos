@@ -1,4 +1,5 @@
 package com.duxnet.games.veinteenbastos;
+import com.duxnet.games.veinteenbastos.enums.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -58,12 +59,10 @@ public class CBaraja
 	public void Pintar(boolean vista,Canvas canvas,int Alto,int Ancho,int X,int Y)
 	{
 		int posX=X;
-    	int posY=Y;    	
-    	Bitmap b;
+    	int posY=Y;    	    	
 		Iterator <CCarta> iterador= Baraja.iterator();  		  
 	    while (iterador.hasNext()) 
-	    {  
-	    	posX=posX+2;
+	    {  	    	
 	    	CCarta c=iterador.next();
 	    	c.Pintar(vista,canvas,Alto,Ancho,posX,posY);	
 	    }  
@@ -195,6 +194,15 @@ public class CBaraja
 	public void setAnchoCarta(int anchoCarta) 
 	{
 		AnchoCarta = anchoCarta;
+	}
+	public boolean Tocada(float x,float y)
+	{
+		boolean rtn=false;
+		if(size()>0 && DameUltimaCarta(false).Tocada(x, y))
+    	{    		
+			rtn=true;
+    	}
+		return rtn;
 	}
 
 }

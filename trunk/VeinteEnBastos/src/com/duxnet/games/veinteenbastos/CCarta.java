@@ -1,8 +1,9 @@
 package com.duxnet.games.veinteenbastos;
-import java.util.Iterator;
-
+import com.duxnet.games.veinteenbastos.enums.*;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 public class CCarta implements Comparable<Object>
 {
@@ -27,13 +28,16 @@ public class CCarta implements Comparable<Object>
 	{		
 		setPalo(palo);
 		setValor(eCarta.getCarta(carta).getValor());
-		setId(eCarta.getCarta(carta).getId());
+		setId(10*(palo)+(carta-1));
+		//setId(eCarta.getCarta(carta).getId());
 		setNombrePalo(ePalo.getPalo(palo).name());
 		setNombreCarta(eCarta.getCarta(carta).name());
 		setCarta(getNombreCarta() + " DE " + getNombrePalo());		
 		setImagenCarta(bmpcarta);
 		setFondoCarta(Bitmap.createScaledBitmap(fondo, fondo.getWidth()/2, fondo.getHeight()/2, true));
 		setPesoOrden(10*(getPalo())+(getId()-1));
+		setPosX(-1);
+		setPosY(-1);
 	}	
 	public String getLog()
 	{
@@ -68,6 +72,13 @@ public class CCarta implements Comparable<Object>
 	}
 	public int getValor() {
 		return m_valor;
+	}
+	public int getValor(ePalo triunfo) 
+	{
+		int rtn=m_valor;
+		if(triunfo.getId()==this.getPalo())
+			rtn+=500;
+		return rtn;
 	}
 	public void setValor(int valor) {
 		m_valor = valor;
@@ -135,6 +146,15 @@ public class CCarta implements Comparable<Object>
 	public int getAlto() {
 		return Alto;
 	}
+	public void PintarBorde(Canvas canvas)
+	{
+		Paint p=new Paint();
+		p.setColor(Color.RED);
+		p.setStrokeWidth(3);
+		p.setStyle(Paint.Style.STROKE);
+		canvas.drawRect(getPosX(), getPosY(), getPosX()+Ancho, getPosY()+Alto,p);		
+		
+	}	
 	public void Pintar(boolean vista,Canvas canvas,int Alto,int Ancho,int X,int Y)
 	{
 		int posX=X;
@@ -147,7 +167,9 @@ public class CCarta implements Comparable<Object>
     		b=getFondoCarta();	    		
     	canvas.drawBitmap(b, posX, posY, null);
     	setPosX(posX);
-    	setPosY(posY);	     
+    	setPosY(posY);	  
+    	if(isMarcada())
+    		PintarBorde(canvas);
 	}
 	public boolean isMarcada() {
 		return marcada;

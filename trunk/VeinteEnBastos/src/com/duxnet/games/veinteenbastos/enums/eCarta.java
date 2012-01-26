@@ -1,4 +1,4 @@
-package com.duxnet.games.veinteenbastos;
+package com.duxnet.games.veinteenbastos.enums;
 
 public enum eCarta 
 {
