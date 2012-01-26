@@ -1,4 +1,4 @@
-package com.duxnet.games.veinteenbastos;
+package com.duxnet.games.veinteenbastos.enums;
 public enum ePalo
 {
 	OROS(0),COPAS(1),ESPADAS(2),BASTOS(3);
