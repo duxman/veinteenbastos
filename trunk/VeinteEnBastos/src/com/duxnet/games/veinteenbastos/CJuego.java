@@ -4,6 +4,7 @@ import java.util.Iterator;
 import com.duxnet.games.veinteenbastos.enums.ePalo;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,6 +27,7 @@ public class CJuego
 	private CPareja ParejaImpar;	
 	private CBaraja baraja;
 	private CCarta CartaTriunfo;
+	private CJugada Jugada;
 	
 	
 	public CJuego(Bitmap bc,Bitmap bf,Bitmap bt,int altoscr,int anchoscr)	
@@ -39,7 +41,8 @@ public class CJuego
 		
 		setParejaPar(new CPareja(new CJugador("Jugador2", 2, false),new CJugador("Jugador4",4,false)));
 		setParejaImpar(new CPareja(new CJugador("Jugador1", 1, false),new CJugador("Jugador3",3,false)));
-		baraja=new CBaraja(bc,bf);	
+		baraja=new CBaraja(bc,bf);
+		
 		NuevoJuego();
 	}
 	public void NuevoJuego()
@@ -70,16 +73,31 @@ public class CJuego
 	}	
 	public CCarta colision(float x,float y)
 	{
+		//CJugada Jugada=new CJugada(ePalo.getPalo(getCartaTriunfo().getPalo()), 1);
 		CCarta rtn=null;
 		if(getCartaTriunfo().Tocada(x,y))
-		{
+		{			
 			rtn=getCartaTriunfo();
+			if(rtn.isMarcada())
+			{
+				rtn.setMarcada(false);
+				baraja.add(rtn);	
+				rtn=null;
+				
+			}
+			
 		}
 		else
 		{
 			if(baraja.Tocada(x, y))
 			{
-				rtn=baraja.DameUltimaCarta(false);			
+				rtn=baraja.DameUltimaCarta(false);
+				if(rtn.isMarcada())
+				{
+					setCartaTriunfo(baraja.DameUltimaCarta(true));;
+					getCartaTriunfo().setMarcada(false);
+					rtn=null;
+				}
 			}						
 			else
 			{
@@ -87,25 +105,60 @@ public class CJuego
 				c=getParejaPar().getJugadorA().getMano().Tocada(x, y);
 				if(c!=null)
 				{
-					rtn=c;									
+					if(c.isMarcada())
+					{
+						
+						getParejaPar().getJugadorA().getMano().getCartas().remove(c);
+						c.setMarcada(false);
+						baraja.add(c);
+						rtn=null;
+					}
+					else						
+						rtn=c;									
 				}
 				c=getParejaPar().getJugadorB().getMano().Tocada(x, y);
 				if(c!=null)
 				{
-					rtn=c;					
+					if(c.isMarcada())
+					{
+						
+						getParejaPar().getJugadorB().getMano().getCartas().remove(c);
+						c.setMarcada(false);
+						baraja.add(c);
+						rtn=null;
+					}
+					else						
+						rtn=c;					
 				}
 				c=getParejaImpar().getJugadorA().getMano().Tocada(x, y);
 				if(c!=null)
 				{
-					rtn=c;
+					if(c.isMarcada())
+					{
+						getParejaImpar().getJugadorA().getMano().getCartas().remove(c);
+						c.setMarcada(false);
+						baraja.add(c);
+						rtn=null;						
+					}
+					else						
+						rtn=c;
 				}
 				c=getParejaImpar().getJugadorB().getMano().Tocada(x, y);
 				if(c!=null)
 				{
-					rtn=c;
+					if(c.isMarcada())
+					{
+						getParejaImpar().getJugadorA().getMano().getCartas().remove(c);
+						c.setMarcada(false);
+						baraja.add(c);
+						rtn=null;
+						
+					}
+					else						
+						rtn=c;
 				}					
 			}
-		}					
+		}		
 		return rtn;
 	}
 	public void Pintar(Canvas canvas)
@@ -200,7 +253,7 @@ public class CJuego
 				queJugador(i+1).getMano().AddCarta(baraja.DamePrimeraCarta(true));
 			}						
 		}				
-		setCartaTriunfo(baraja.DamePrimeraCarta(true));			
+		setCartaTriunfo(baraja.DamePrimeraCarta(true));		
 	}
 	public void jugada(int Mano)
 	{
@@ -224,7 +277,8 @@ public class CJuego
 	}
 	public void setCartaTriunfo(CCarta cartaTriunfo) 
 	{
-		CartaTriunfo = cartaTriunfo;
+		//CCarta CartaTriunfo=new CCarta(cartaTriunfo.getId(),cartaTriunfo.getPalo(),cartaTriunfo.getImagenCarta(),cartaTriunfo.getFondoCarta());
+		CartaTriunfo=cartaTriunfo;
 	}
 	public CCarta getCartaTriunfo() 
 	{
