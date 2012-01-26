@@ -55,6 +55,10 @@ public class CBaraja
 		}
 		OrdenarBaraja(); 
 	}	
+	public void add(CCarta c)
+	{
+		Baraja.add(0, c);
+	}
 	
 	public void Pintar(boolean vista,Canvas canvas,int Alto,int Ancho,int X,int Y)
 	{
