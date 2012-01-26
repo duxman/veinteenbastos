@@ -1,11 +1,14 @@
 package com.duxnet.games.veinteenbastos;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 
 public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Callback
@@ -24,7 +27,7 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
 	
 	private SurfaceHolder holder;
 	
-	public CVeinteEnBastosView(Context context,int altoscr,int anchoscr) 
+	/*public CVeinteEnBastosView(Context context,int altoscr,int anchoscr) 
 	{
 		super(context);
 	
@@ -35,22 +38,41 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
         holder.addCallback(this);
         CargarGraficos();
         Juego=new CJuego(bmpBarajaCompleta, bmpFondoCarta,bmpTapete, altoscr, anchoscr);          	  	  	               
+	}*/
+	public CVeinteEnBastosView(Context context,int altoscr,int anchoscr) 
+	{
+		super(context);
+		init( altoscr, anchoscr);
 	}
+		
+	private void init(int altoscr,int anchoscr)
+	{
+		holder = getHolder();
+        holder.addCallback(this);
+        this.AnchoScreen = anchoscr;
+		this.AltoScreen = altoscr;
+		CargarGraficos();
+		Juego=new CJuego(bmpBarajaCompleta, bmpFondoCarta,bmpTapete, AltoScreen, AnchoScreen);
+	}
+	
 	public void CargarGraficos()
 	{
 		bmpBarajaCompleta = BitmapFactory.decodeResource(getResources(),R.drawable.baraja);
 		bmpFondoCarta=BitmapFactory.decodeResource(getResources(),R.drawable.detras);		
-		bmpTapete=Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.tapete),AnchoScreen ,AltoScreen, true);			
+		//bmpTapete=BitmapFactory.decodeResource(getResources(),R.drawable.tapete);
+		bmpTapete=Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.tapete),AnchoScreen ,AltoScreen, true);		
 	}
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,int height) 
-	{
-		//TODO Auto-generated method stub		
+	{				
+		this.AnchoScreen = width;
+		this.AltoScreen = height;
+		bmpTapete=Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.tapete),AnchoScreen ,AltoScreen, true);
 	}
 
 	public void surfaceCreated(SurfaceHolder holder) 
 	{ 	 
-	  render();	  
+		render();	  
 	}
 
 	public void surfaceDestroyed(SurfaceHolder holder) 
@@ -87,7 +109,8 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
         CCarta c=Juego.colision(x, y);
         if(c!=null)
         {
-        	if(c.isMarcada())      	
+        	if(c.isMarcada())
+        		
         		c.setMarcada(false);
         	else
         		c.setMarcada(true);        	
