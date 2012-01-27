@@ -1,40 +1,36 @@
 package com.duxnet.games.veinteenbastos;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-public class CBaza
+public class CBaza extends CListaCartas
 {
-	private List<CCarta> Baza;
-	
-	public void setBaza(List<CCarta> baza)
-	{
-		Baza = baza;
-	}
-	public List<CCarta> getBaza() 
-	{
-		return Baza;
-	}
+	private int m_puntos;
 	public CBaza()
 	{
-		Baza=new ArrayList<CCarta>();
+		super();
 	}
-	public boolean add(CCarta c)
-	{
-		return Baza.add(c);
-	}
+	
 	public int CuentaPuntos(boolean diezUltimas)
 	{
 		int rtn=0;
+		
 		rtn=(diezUltimas)?10:0;		
-		Iterator<CCarta> itr = Baza.iterator();
-        while(itr.hasNext())
-        {        	
-        	CCarta c = (CCarta)itr.next();
-        	rtn+=c.getValor();      
-        }		
+		Iterator<CCarta> itr = iterator();
+        
+		while(itr.hasNext()) itr.next().getValorCarta();
+		
 		return rtn;			
+	}
+
+	public int getPuntos() 
+	{
+		m_puntos=CuentaPuntos(false);
+		return m_puntos;
+	}
+
+	public void setPuntos(int puntos) 
+	{
+		m_puntos = puntos;
 	}
 
 }
