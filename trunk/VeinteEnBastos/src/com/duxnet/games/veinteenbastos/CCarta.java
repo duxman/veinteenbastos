@@ -1,54 +1,63 @@
 package com.duxnet.games.veinteenbastos;
-import com.duxnet.games.veinteenbastos.enums.*;
+import java.util.Random;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import com.duxnet.games.veinteenbastos.enums.*;
 
 public class CCarta implements Comparable<Object>
 {
-	private Bitmap m_ImagenCarta;	
-	private Bitmap m_FondoCarta;
+	//==================================================================
+    // Propiedades
+    //==================================================================
 	private long m_PesoOrden;
-	private int m_Palo;
-	private int m_id;
-	private int m_valor;
-	private String m_NombreCarta;
-	private String m_NombrePalo;
-	private String m_Carta;
-	private int posX;
-	private int posY;
-	private int Ancho;
-	private int Alto;
+	private int m_ValorCarta;
+	private int m_IdCarta;
+	private ePalo  m_PaloCarta;
+	private eCarta m_TipoCarta;
+	private eLugar m_OcupacionCarta;
+	private int m_OrdinalCarta;
+	private int m_X;
+	private int m_Y;
+	private int m_Alto;
+	private int m_Ancho;
 	private boolean marcada;
-	
-	private eLugar DondeEsta;
-	
+	private String m_NombreCarta;
+	private String m_LogCarta;
+	private Bitmap m_ImagenCarta;	
+	private Bitmap m_FondoCarta;	
+
+	//==================================================================
+    // Constructores
+    //==================================================================
 	public CCarta(int carta,int palo,Bitmap bmpcarta,Bitmap fondo) 
 	{		
-		setPalo(palo);
-		setValor(eCarta.getCarta(carta).getValor());
-		setId(10*(palo)+(carta-1));
-		//setId(eCarta.getCarta(carta).getId());
-		setNombrePalo(ePalo.getPalo(palo).name());
-		setNombreCarta(eCarta.getCarta(carta).name());
-		setCarta(getNombreCarta() + " DE " + getNombrePalo());		
+		setPaloCarta(ePalo.getPalo(palo));		
+		setTipoCarta(eCarta.getCarta(carta));
 		setImagenCarta(bmpcarta);
-		setFondoCarta(Bitmap.createScaledBitmap(fondo, fondo.getWidth()/2, fondo.getHeight()/2, true));
-		setPesoOrden(10*(getPalo())+(getId()-1));
-		setPosX(-1);
-		setPosY(-1);
+		setFondoCarta(fondo);
+		setValorCarta(getTipoCarta().getValor());
+		setOrdinalCarta(10*(palo)+(carta-1));
+		setIdCarta(carta);
+		setNombreCarta(getTipoCarta().name() + " de "+ getPaloCarta().name());
+		setLogCarta(getNombreCarta() + "Id : " + getIdCarta() + "Puntos " + getValorCarta());
+		setPesoOrden(getIdCarta());
+		setX(0);
+		setY(0);
+		setAlto(bmpcarta.getHeight());
+		setAncho(bmpcarta.getWidth());
 	}	
-	public String getLog()
-	{
-		return getCarta()+" id carta : "+getId()+" valor carta : "+ getValor();
-	}
-	public long getPesoOrden() {
-		return m_PesoOrden;
-	}
-	public void setPesoOrden(long l) {
-		m_PesoOrden = l;
-	}
+	
+	//==================================================================
+    // Metodos
+    //==================================================================	
+	public boolean Tocada(float x2, float y2) 
+    {
+        return x2 > getX() && x2 < getX() + getAncho() && y2 > getY() && y2 < getY() + getAlto();
+    }
+	
 	public int compareTo(Object another) 
 	{
 		if (this.getPesoOrden()== ((CCarta) another).getPesoOrden())
@@ -58,103 +67,25 @@ public class CCarta implements Comparable<Object>
         else
             return -1;
 	}
-	public int getPalo() {
-		return m_Palo;
-	}
-	public void setPalo(int palo) {
-		m_Palo = palo;
-	}
-	public int getId() {
-		return m_id;
-	}
-	public void setId(int id) {
-		m_id = id;
-	}
-	public int getValor() {
-		return m_valor;
-	}
-	public int getValor(ePalo triunfo) 
-	{
-		int rtn=m_valor;
-		if(triunfo.getId()==this.getPalo())
-			rtn+=500;
-		return rtn;
-	}
-	public void setValor(int valor) {
-		m_valor = valor;
-	}
-	public Bitmap getImagenCarta() {
-		return m_ImagenCarta;
-	}
-	public void setImagenCarta(Bitmap imagenCarta) {
-		m_ImagenCarta = imagenCarta;
-	}
-	public String getNombreCarta() {
-		return m_NombreCarta;
-	}
-	public void setNombreCarta(String nombreCarta) {
-		m_NombreCarta = nombreCarta;
-	}
-	public String getNombrePalo() {
-		return m_NombrePalo;
-	}
-	public void setNombrePalo(String nombrePalo) {
-		m_NombrePalo = nombrePalo;
-	}
-	public String getCarta() {
-		return m_Carta;
-	}
-	public void setCarta(String carta) {
-		m_Carta = carta;
-	}
-	public Bitmap getFondoCarta() {
-		return m_FondoCarta;
-	}
-	public void setFondoCarta(Bitmap fondoCarta) {
-		m_FondoCarta = fondoCarta;
-	}
-	public int getPosX() {
-		return posX;
-	}
-	public void setPosX(int posX) {
-		this.posX = posX;
-	}
-	public int getPosY() {
-		return posY;
-	}
-	public void setPosY(int posY) {
-		this.posY = posY;
-	}
-	public eLugar getDondeEsta() {
-		return DondeEsta;
-	}
-	public void setDondeEsta(eLugar dondeEsta) {
-		DondeEsta = dondeEsta;
-	}
-	public boolean Tocada(float x2, float y2) 
-    {
-        return x2 > posX && x2 < posX + getAncho() && y2 > posY && y2 < posY + getAlto();
-    }
-	public int getAncho() {
-		return Ancho;
-	}
-	public void setDimensiones(int ancho,int alto) 
-	{
-		Ancho = ancho;
-		Alto = alto;
-	}
-	public int getAlto() {
-		return Alto;
-	}
 	public void PintarBorde(Canvas canvas)
 	{
 		Paint p=new Paint();
 		p.setColor(Color.RED);
 		p.setStrokeWidth(3);
 		p.setStyle(Paint.Style.STROKE);
-		canvas.drawRect(getPosX(), getPosY(), getPosX()+Ancho, getPosY()+Alto,p);		
-		
+		canvas.drawRect(getX(), getY(), getX()+getAncho(), getY()+getAlto(),p);				
 	}	
+	
+	public long DamePesoOrdenAleatorio()
+	{				
+		Random r = new Random();
+		int iAleatorio = (int)(Math.random()*10000);
+		long semilla =(long)(Math.abs(Math.sqrt(Math.tanh(r.nextInt(iAleatorio))))*r.nextInt(iAleatorio));		
+		r.setSeed(semilla);	
+		long rtn=r.nextLong();
+		setPesoOrden(rtn);
+		return rtn;								
+	}
 	public void Pintar(boolean vista,Canvas canvas,int Alto,int Ancho,int X,int Y)
 	{
 		int posX=X;
@@ -164,17 +95,155 @@ public class CCarta implements Comparable<Object>
     	if(vista)
     		b=getImagenCarta();
     	else
-    		b=getFondoCarta();	    		
+    		b=getFondoCarta();
+    	
     	canvas.drawBitmap(b, posX, posY, null);
-    	setPosX(posX);
-    	setPosY(posY);	  
+    	setX(posX);
+    	setY(posY);	  
     	if(isMarcada())
     		PintarBorde(canvas);
 	}
+
+	//==================================================================
+    // Metodos de Acceso
+    //==================================================================
+	public long getPesoOrden() 
+	{
+		return m_PesoOrden;
+	}
+
+	public void setPesoOrden(long rtn) 
+	{
+		m_PesoOrden = rtn;
+	}
+
+	public int getValorCarta() 
+	{
+		return m_ValorCarta;
+	}
+	
+
+	public void setValorCarta(int valorCarta) {
+		m_ValorCarta = valorCarta;
+	}
+
+	public int getIdCarta() {
+		return m_IdCarta;
+	}
+
+	public void setIdCarta(int idCarta) {
+		m_IdCarta = idCarta;
+	}
+
+	public ePalo getPaloCarta() {
+		return m_PaloCarta;
+	}
+
+	public void setPaloCarta(ePalo paloCarta) {
+		m_PaloCarta = paloCarta;
+	}
+
+	public int getOrdinalCarta() {
+		return m_OrdinalCarta;
+	}
+
+	public void setOrdinalCarta(int ordinalCarta) {
+		m_OrdinalCarta = ordinalCarta;
+	}
+
+	public int getX() {
+		return m_X;
+	}
+
+	public void setX(int x) {
+		m_X = x;
+	}
+
+	public int getY() {
+		return m_Y;
+	}
+
+	public void setY(int y) {
+		m_Y = y;
+	}
+
+	public int getAlto() {
+		return m_Alto;
+	}
+
+	public void setAlto(int alto) {
+		m_Alto = alto;
+	}
+
+	public int getAncho() {
+		return m_Ancho;
+	}
+
+	public void setAncho(int ancho) {
+		m_Ancho = ancho;
+	}
+
 	public boolean isMarcada() {
 		return marcada;
 	}
+
 	public void setMarcada(boolean marcada) {
 		this.marcada = marcada;
-	}	
+	}
+
+	public String getNombreCarta() {
+		return m_NombreCarta;
+	}
+
+	public void setNombreCarta(String nombreCarta) {
+		m_NombreCarta = nombreCarta;
+	}
+
+	public String getLogCarta() {
+		return m_LogCarta;
+	}
+
+	public void setLogCarta(String logCarta) {
+		m_LogCarta = logCarta;
+	}
+
+	public Bitmap getFondoCarta() {
+		return m_FondoCarta;
+	}
+
+	public void setFondoCarta(Bitmap fondoCarta) {
+		m_FondoCarta = fondoCarta;
+	}
+
+	public Bitmap getImagenCarta() {
+		return m_ImagenCarta;
+	}
+
+	public void setImagenCarta(Bitmap imagenCarta) {
+		m_ImagenCarta = imagenCarta;
+	}
+
+
+
+	public eCarta getTipoCarta() {
+		return m_TipoCarta;
+	}
+
+
+
+	public void setTipoCarta(eCarta tipoCarta) {
+		m_TipoCarta = tipoCarta;
+	}
+
+
+
+	public eLugar getOcupacionCarta() {
+		return m_OcupacionCarta;
+	}
+
+
+
+	public void setOcupacionCarta(eLugar ocupacionCarta) {
+		m_OcupacionCarta = ocupacionCarta;
+	}
 }
