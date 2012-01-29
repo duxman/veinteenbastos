@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 
 public class CBaraja extends CListaCartas
 {
@@ -24,7 +25,8 @@ public class CBaraja extends CListaCartas
 		setBarajaCompleta(Baraja);
 		setReversoCarta(ReversoCartas);
 		setAltoCarta(getBarajaCompleta().getHeight() / BMP_ROWS);
-		setAnchoCarta(getBarajaCompleta().getWidth() / BMP_COLUMNS);
+		setAnchoCarta(getBarajaCompleta().getWidth() / BMP_COLUMNS);		
+        GlobalVar.getInstance().setDimCartas(new Point(getAnchoCarta(),getAltoCarta()));
 		setAnchoPalo(getBarajaCompleta().getWidth());
 		CreaBaraja(false);
 		Ordenar();
