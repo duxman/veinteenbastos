@@ -36,6 +36,10 @@ public class CMano  extends CListaCartas
 	{
 		Pintar(vista, canvas, Alto, Ancho, X, Y, Ancho/2, Horizontal, false);
 	}
+	public void Pintar(boolean vista,Canvas canvas,int Alto,int Ancho,int X,int Y,boolean Horizontal,int separacion)
+	{
+		Pintar(vista, canvas, Alto, Ancho, X, Y, separacion, Horizontal,false);
+	}
 	
 	public void Ordenar() 
 	{

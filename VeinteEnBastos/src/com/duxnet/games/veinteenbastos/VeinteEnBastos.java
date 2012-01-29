@@ -2,6 +2,7 @@ package com.duxnet.games.veinteenbastos;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Window;
 
@@ -16,7 +17,7 @@ public class VeinteEnBastos extends Activity {
         //setContentView(R.layout.main);        
         //myguiniote = (CVeinteEnBastosView) findViewById(R.id.SurfaceView);
         int setOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        setRequestedOrientation(setOrientation);
+        setRequestedOrientation(setOrientation);        
         setContentView(new CVeinteEnBastosView(this,getWindowManager().getDefaultDisplay().getHeight(),getWindowManager().getDefaultDisplay().getWidth()));
         setRequestedOrientation(setOrientation);
         //setContentView(new CVeinteEnBastosView(this));

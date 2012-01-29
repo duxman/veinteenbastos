@@ -110,10 +110,10 @@ public class CListaCartas implements List<CCarta>
     		c.Pintar(vista,canvas,Alto,Ancho,posX,posY);
     		if(contar)
     		{    		
-    			p.setTextSize(12);
+    			p.setTextSize(50);
     			p.setFakeBoldText(true);
-    			p.setColor(Color.LTGRAY);    			
-    			canvas.drawText(String.valueOf(size()),(posX+Ancho/2),(posX+Alto/2), p);
+    			p.setColor(Color.RED);    			
+    			canvas.drawText(String.valueOf(size()),(posX+(10)),(posY+(Alto/2)), p);
     		}
     	}
 	}	
