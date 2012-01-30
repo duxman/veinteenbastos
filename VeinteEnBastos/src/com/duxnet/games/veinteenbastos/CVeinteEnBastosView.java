@@ -39,7 +39,7 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
 		this.AltoScreen = altoscr;		
         GlobalVar.getInstance().setDimPantalla(new Point(AnchoScreen,AltoScreen));		
 		CargarGraficos();
-		Juego=new CJuego(bmpBarajaCompleta,bmpFondoCarta,bmpTapete);
+		Juego=new CJuego(bmpBarajaCompleta,bmpFondoCarta,bmpTapete,2);
 	}
 	
 	public void CargarGraficos()
@@ -93,7 +93,7 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
 		float x = event.getX();
         float y = event.getY();
         
-        //Juego.colision(x, y);        
+        Juego.Tocado(x, y);        
         render();
         return super.onTouchEvent(event);
 		
