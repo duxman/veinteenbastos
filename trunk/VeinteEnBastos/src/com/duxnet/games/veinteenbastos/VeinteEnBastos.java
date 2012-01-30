@@ -2,7 +2,6 @@ package com.duxnet.games.veinteenbastos;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Window;
 

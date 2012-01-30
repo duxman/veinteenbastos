@@ -1,7 +1,5 @@
 package com.duxnet.games.veinteenbastos;
 
-import java.util.Iterator;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -34,37 +32,12 @@ public class CBaraja extends CListaCartas
 	
 	//==================================================
 	// Metodos
-	//==================================================
-	public void CortarBaraja()
-	{	
-		int iPunto = (int)(Math.random()*40);		
-		int Contador=0;		
-		for(int i=iPunto;i<40;i++)
-		{
-			get(i).setPesoOrden(Contador);
-			Contador++;			
-		}
-		for(int i=0;i<iPunto;i++)
-		{
-			get(i).setPesoOrden(Contador);
-			Contador++;			
-		}				
-		Ordenar();
-	}
+	//==================================================	
 	public void Pintar(boolean vista,Canvas canvas,int Alto,int Ancho,int X,int Y)
 	{		
 		Pintar(vista, canvas, Alto, Ancho, X, Y, 0, false, true);		
 	}
-	public void Barajar()
-	{		
-
-		Iterator<CCarta> it = iterator();
-	    while(it.hasNext())
-	    {
-	    	it.next().DamePesoOrdenAleatorio();	    	     
-	    }
-	    Ordenar();
-	}	
+	
 	private void CreaBaraja(boolean desordenada)
 	{		
 	    int srcY ;

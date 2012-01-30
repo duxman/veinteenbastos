@@ -25,18 +25,19 @@ class CJugador
 		setReal(r);
 		setPosicion(e);
 		setMano(new CMano());
-		m_lugar=new Point();
+		setLugar(new Point());
 		
 	}
 	public void Pintar(Canvas canvas)
 	{	
 		Point tmppos=new Point(getLugar());
-		if(m_posicion==ePosicion.ABAJO)
+		if(getPosicion()==ePosicion.ABAJO)
 			getMano().Pintar(true, canvas, c.y, c.x, tmppos.x, tmppos.y,Horizontal,c.x);
 		else
 			getMano().Pintar(false, canvas, c.y, c.x, tmppos.x, tmppos.y,Horizontal);
 	}
-	private void setNombre(String nombre) {
+	private void setNombre(String nombre) 
+	{
 		m_Nombre = nombre;
 	}
 	@SuppressWarnings("unused")
@@ -52,14 +53,13 @@ class CJugador
 	{
 		return m_NumeroJugador;
 	}
-	private void setReal(boolean real) {
+	public void setReal(boolean real) {
 		m_Real = real;
 	}
-	@SuppressWarnings("unused")
-	private boolean isReal() {
+	public boolean isReal() 
+	{
 		return m_Real;
 	}
-
 	public void setMano(CMano mano) {
 		this.m_mano = mano;
 	}
@@ -102,5 +102,8 @@ class CJugador
 		}
 		
 		return m_lugar;
+	}
+	private void setLugar(Point lugar) {
+		m_lugar = lugar;
 	}
 }

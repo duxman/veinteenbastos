@@ -67,6 +67,24 @@ public class CCarta implements Comparable<Object>
         else
             return -1;
 	}
+	public int MayorValor(Object another) 
+	{
+		if (this.getValorCarta()== ((CCarta) another).getValorCarta())
+            return 0;
+        else if ((this.getValorCarta()) > ((CCarta) another).getValorCarta())
+            return 1;
+        else
+            return -1;
+	}
+	public int MayorId(Object another)
+	{
+		if (this.getIdCarta()== ((CCarta) another).getIdCarta())
+            return 0;
+        else if ((this.getIdCarta()) > ((CCarta) another).getIdCarta())
+            return 1;
+        else
+            return -1;
+	}
 	public void PintarBorde(Canvas canvas)
 	{
 		Paint p=new Paint();
