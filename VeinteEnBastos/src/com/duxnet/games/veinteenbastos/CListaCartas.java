@@ -90,6 +90,14 @@ public class CListaCartas implements List<CCarta>
 		{	
 		}
 	}
+	public int Contar()
+	{
+		int rtn=0;
+		Iterator<CCarta> it=iterator();
+		while(it.hasNext())
+			rtn+=it.next().getValorCarta();
+		return rtn;
+	}
 	public void Pintar(boolean vista,Canvas canvas,int Alto,int Ancho,int X,int Y)
 	{
 		Pintar(vista,canvas,Alto,Ancho,X,Y,Ancho/2,true,false);
