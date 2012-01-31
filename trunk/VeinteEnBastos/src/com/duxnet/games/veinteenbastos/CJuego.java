@@ -10,32 +10,22 @@ import android.graphics.Color;
 import android.graphics.Point;
 
 public class CJuego 
-{
-	private static final int BMP_ROWS = 4;
-	private static final int BMP_COLUMNS = 10;
-	
-	private Bitmap m_bmpTapete;
-	
+{		
+	private Bitmap m_bmpTapete;	
 	private Point m_DimCartas;
-	private Point m_DimPantalla; 
-	
-	//private CPareja m_ParejaPar;
-	//private CPareja m_ParejaImpar;
-	private List<CJugador> m_Jugadores;
-	//private CBaraja m_baraja;	
+	private Point m_DimPantalla; 		
+	private List<CJugador> m_Jugadores;		
 	private CCarta  m_triunfo;		
 	private GlobalVar m_global;
+	
 	public CJuego(Bitmap bc,Bitmap bf,Bitmap bt,int jugadores)	
 	{		
 		
 		int turno = 0;
-		m_DimPantalla=new Point(GlobalVar.getInstance().getDimPantalla());
-		m_DimCartas = new Point((bc.getWidth() / BMP_COLUMNS),(bc.getHeight() / BMP_ROWS));
-		
+		m_DimPantalla=new Point(GlobalVar.getInstance().getDimPantalla());		
 		m_bmpTapete=bt;		
-		m_global=GlobalVar.getInstance();
-		m_global.setBaraja(bc,bf);				
-		m_global.setDimCartas(m_DimCartas);
+		m_global=GlobalVar.getInstance();					
+		m_DimCartas=m_global.getDimCartas();
 		
 				
 		m_Jugadores=new ArrayList<CJugador>();
