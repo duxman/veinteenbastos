@@ -22,20 +22,21 @@ public class CJuego
 	//private CPareja m_ParejaPar;
 	//private CPareja m_ParejaImpar;
 	private List<CJugador> m_Jugadores;
-	private CBaraja m_baraja;	
+	//private CBaraja m_baraja;	
 	private CCarta  m_triunfo;		
-	
+	private GlobalVar m_global;
 	public CJuego(Bitmap bc,Bitmap bf,Bitmap bt,int jugadores)	
 	{		
 		
 		int turno = 0;
 		m_DimPantalla=new Point(GlobalVar.getInstance().getDimPantalla());
-		m_bmpTapete=bt;
-		setBaraja(new CBaraja(bc,bf));
-		
 		m_DimCartas = new Point((bc.getWidth() / BMP_COLUMNS),(bc.getHeight() / BMP_ROWS));
 		
-		GlobalVar.getInstance().setDimCartas(m_DimCartas);
+		m_bmpTapete=bt;		
+		m_global=GlobalVar.getInstance();
+		m_global.setBaraja(bc,bf);				
+		m_global.setDimCartas(m_DimCartas);
+		
 				
 		m_Jugadores=new ArrayList<CJugador>();
 		if(jugadores==2)
@@ -202,10 +203,11 @@ public class CJuego
 		return getTriunfo();
 	}
 	private CBaraja getBaraja() {
-		return m_baraja;
+		return m_global.getBaraja();
 	}
+	@SuppressWarnings("unused")
 	private void setBaraja(CBaraja baraja) {
-		m_baraja = baraja;
+		m_global.setBaraja(baraja.getBarajaCompleta(),baraja.getReversoCarta());
 	}
 	private CCarta getTriunfo() {
 		return m_triunfo;

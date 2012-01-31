@@ -1,5 +1,8 @@
 package com.duxnet.games.veinteenbastos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -13,6 +16,7 @@ public class CBaraja extends CListaCartas
 	private int m_AnchoPalo;
 	private Bitmap m_BarajaCompleta;
 	private Bitmap m_ReversoCarta;
+	public List<CPalo> m_Palos;	
 	
 	//==================================================
 	// Constructores
@@ -41,11 +45,13 @@ public class CBaraja extends CListaCartas
 	private void CreaBaraja(boolean desordenada)
 	{		
 	    int srcY ;
-	    int srcX ;        
+	    int srcX ; 
+	    m_Palos=new ArrayList<CPalo>();
 		for(int contPalo=0;contPalo<4;contPalo++)
 		{						
 			srcY=contPalo*getAltoCarta();						
-			Bitmap BmpPalo=Bitmap.createBitmap(getBarajaCompleta(), 0, srcY, getAnchoPalo(), getAltoCarta());					
+			Bitmap BmpPalo=Bitmap.createBitmap(getBarajaCompleta(), 0, srcY, getAnchoPalo(), getAltoCarta());
+			m_Palos.add(new CPalo(contPalo, BmpPalo));			
 			for(int contCarta=1;contCarta<11;contCarta++)
 			{				
 				srcX=(contCarta-1)*getAnchoCarta();				

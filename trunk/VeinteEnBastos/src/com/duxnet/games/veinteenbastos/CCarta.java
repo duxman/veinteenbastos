@@ -145,8 +145,13 @@ public class CCarta implements Comparable<Object>
 		m_ValorCarta = valorCarta;
 	}
 
-	public int getIdCarta() {
+	public int getIdCarta() 
+	{
 		return m_IdCarta;
+	}
+	public eCarta getECarta() 
+	{
+		return eCarta.getCarta(m_IdCarta);
 	}
 
 	public void setIdCarta(int idCarta) {

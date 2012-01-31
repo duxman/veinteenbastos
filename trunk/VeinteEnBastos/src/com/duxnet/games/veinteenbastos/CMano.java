@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 
 public class CMano  extends CListaCartas
 {
+	private int m_numcar;
 	public CMano()
 	{
 		super();
@@ -15,7 +16,7 @@ public class CMano  extends CListaCartas
 		rtn=get(i);
 		if(rtn!=null) remove(i);
 		return rtn;		
-	}
+	}	
 	public CCarta TirarCarta()
 	{
 		return tirarCarta(DecidirCarta());					
@@ -50,6 +51,20 @@ public class CMano  extends CListaCartas
 			c.setPesoOrden(c.getOrdinalCarta());	    			    	   		     
 	    }  				
 		super.Ordenar();
+	}
+	public int getNumcar() {
+		return m_numcar;
+	}
+	public void setNumcar(int numcar) {
+		m_numcar = numcar;
+	}
+	public void AddNumcar() 
+	{
+		m_numcar++;
 	}		
+	public void DelNumcar() 
+	{
+		m_numcar--;
+	}
 	
 }
