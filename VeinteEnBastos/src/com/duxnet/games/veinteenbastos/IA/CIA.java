@@ -1,5 +1,7 @@
 package com.duxnet.games.veinteenbastos.IA;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +27,75 @@ public class CIA
 	public CIA()
 	{
 		setGloval(GlobalVar.getInstance());
-		m_Estado=new CIAEstado();
+		m_Estado=getGloval().CreaEstado();
+	}
+	
+	void FinRondaIA()	
+	{
+	 /*Inicializamos algunas variables de la ronda*/
+	 EstadoIA->turnoComp = 0;
+	 EstadoIA->turno = 1;
+	 EstadoIA->puntosMesa = 0;
+	 EstadoIA->miTurno = 0;
+
+	 /*Comprobamos si es la ronda 4 de Idas o Vueltas, y en consecuencia comienza las
+	   jugadas del arrastre*/
+	 if ((*EstadoIA->num_ronda == 4) && (*EstadoIA->ultimas == 0)){
+	   /*Comienza el arrastre*/
+	   EstadoIA->nTriunfosIniciales = EstadoIA->PaloT.N;
+	   if (EstadoIA->PaloT.N >= 3){
+	     if ((EstadoIA->PaloT.Palo[EstadoIA->PaloT.N-1].valor == '9')
+	       && (EstadoIA->PaloT.Palo[EstadoIA->PaloT.N-2].valor == '8')
+	       && (EstadoIA->PaloT.Palo[EstadoIA->PaloT.N-3].valor == '7')){
+	       EstadoIA->JugadaTriunfo = 1; /*Tiene los tres triunfos más altos*/
+	     }
+	   }
+	   if ((EstadoIA->PaloT.N >= 2) && (EstadoIA->JugadaTriunfo == 0)){
+	     if ((EstadoIA->PaloT.Palo[EstadoIA->PaloT.N-1].valor == '9')
+	       && (EstadoIA->PaloT.Palo[EstadoIA->PaloT.N-2].valor == '8')){
+	       EstadoIA->JugadaTriunfo = 2; /*Tiene los dos triunfos más altos*/
+	     }
+	   }
+	 }
+	 /*Condiciones especiales del arrastre*/
+	 if ((EstadoIA->nTriunfosIniciales == 5) && (*EstadoIA->num_ronda == 1)){
+	   if (EstadoIA->JugadaTriunfo == 1) {
+	     if (((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->PaloT.Datos->quedanporsalir >= 3))
+	         || ((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->cartaComp.palo == EstadoIA->Triunfo->palo))){
+	       EstadoIA->JugadaTriunfo = 3;
+	     }
+	     if (((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->PaloT.Datos->quedanporsalir <= 2))
+	         || (nTriunfosMesa(EstadoIA) == 3) || (nTriunfosMesa(EstadoIA) == 4)){
+	       EstadoIA->JugadaTriunfo = 1;
+	     }
+	   }
+	   else if (EstadoIA->JugadaTriunfo == 2) {
+	     if (((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->PaloT.Datos->quedanporsalir >= 2))
+	         || ((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->cartaComp.palo == EstadoIA->Triunfo->palo))){
+	       EstadoIA->JugadaTriunfo = 3;
+	     }
+	     else if ((nTriunfosMesa(EstadoIA) == 3) && (EstadoIA->PaloT.Datos->quedanporsalir == 2)) {
+	       EstadoIA->JugadaTriunfo = 4;
+	     }
+	     else {
+	       EstadoIA->JugadaTriunfo = 2;
+	     }
+	   }
+	 }/*nº de triunfos iniciales 5*/
+
+	 if (EstadoIA->nTriunfosIniciales == 4) {
+	   if ((EstadoIA->JugadaTriunfo == 5) && (*EstadoIA->num_ronda == 1)){
+	     if ((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->cartaComp.palo == EstadoIA->Triunfo->palo)){
+	       EstadoIA->JugadaTriunfo = 3;
+	       }
+	     else if ((nTriunfosMesa(EstadoIA) == 3) || (nTriunfosMesa(EstadoIA) == 2)){
+	       EstadoIA->JugadaTriunfo = 6;
+	     }
+	   }
+	   if ((EstadoIA->JugadaTriunfo == 5) && (*EstadoIA->num_ronda == 2) && (nTriunfosMesa(EstadoIA) == 2)){
+	     EstadoIA->JugadaTriunfo = 3;
+	   }
+	 }/*fin nº de triunfos iniciales 4*/
 	}
 	public boolean CambioTriunfo(CCarta c)
 	{	 		
@@ -37,6 +107,44 @@ public class CIA
 	     return true;
 	 }
 	 return false;
+	}
+	public void AnularCantes(String acciones)
+	{
+		String rtn=acciones;
+		byte[] aux=rtn.getBytes();
+		Iterator<CPalo> it =getEstado().Palos.iterator();
+		while(it.hasNext())
+		{
+			CPalo palo=it.next();
+			if(aux[palo.getPaloBaraja()]==1)
+				palo.getDatos().haycante=false;					
+		}
+	}
+	
+	void CambiarSiete(CCarta c)
+	{	 
+	 QuitarCarta(c);
+	 RobaCartaIA(getEstado().Triunfo);
+	}
+	
+	public String PuedoCantar(String acciones)
+	{
+		String rtn=acciones;
+		byte[] aux=rtn.getBytes();
+		int i=0;
+		Iterator<CPalo> it =getEstado().Palos.iterator();
+		while(it.hasNext())
+		{
+			CPalo palo=it.next();
+			if(palo.getDatos().haycante)
+			{
+				palo.getDatos().haycante=false;				
+				aux[i]='1';				
+			}			
+			i++;			
+		}
+		rtn=String.valueOf(aux);
+		return rtn;
 	}
 	
 	public void RobaCartaIA( CCarta Carta)

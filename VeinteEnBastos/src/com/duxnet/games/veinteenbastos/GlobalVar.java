@@ -1,15 +1,22 @@
 package com.duxnet.games.veinteenbastos;
 
+import com.duxnet.games.veinteenbastos.IA.CIAEstado;
+
 import android.graphics.Bitmap;
 import android.graphics.Point;
 
 public class GlobalVar 
 {
+	private static final int BMP_ROWS = 4;
+	private static final int BMP_COLUMNS = 10;
 	private Point m_DimPantalla;
 	private Point m_DimCartas;
+	private CJuego m_juego;
 	private CBaraja m_Baraja;
 	private CJugada m_Jugada;
+	private CIAEstado m_Estado;
     private static GlobalVar instance;
+    
     
 
     static 
@@ -64,8 +71,37 @@ public class GlobalVar
 		return m_Jugada;
 	}
 
-	public void setJugada(CJugada jugada) {
+	public void setJugada(CJugada jugada) 
+	{
 		m_Jugada = jugada;
+	}
+
+	public CJuego getJuego() 
+	{
+		return m_juego;
+	}
+
+	public void  CreateJuego(Bitmap bc,Bitmap bf,Bitmap bt,int jugadores) 
+	{
+		Point DimCartas= new Point((bc.getWidth() / BMP_COLUMNS),(bc.getHeight() / BMP_ROWS));
+		setDimCartas(DimCartas);
+		
+		m_juego = new CJuego(bc, bf, bt, jugadores);						
+	}
+
+	public CIAEstado getEstado() 
+	{
+		return m_Estado;
+	}
+
+	public CIAEstado CreaEstado()
+	{
+		m_Estado=new CIAEstado();
+		return m_Estado;		
+	}
+	public void setEstado(CIAEstado estado)
+	{
+		m_Estado = estado;
 	}
 
 }
