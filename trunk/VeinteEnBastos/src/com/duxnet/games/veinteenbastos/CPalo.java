@@ -5,7 +5,7 @@ import com.duxnet.games.veinteenbastos.enums.ePalo;
 
 
 
-public class CPalo extends CListaCartas
+public class CPalo extends CListaCartas implements Comparable<Object>
 {   
 	private int PaloBaraja; 
 	private Bitmap bmpPalo;
@@ -36,4 +36,13 @@ public class CPalo extends CListaCartas
 	public void setDatos(CIADatos datos) {
 		m_Datos = datos;
 	}
+	public int compareTo(Object another) 
+	{
+		if (this.size()== ((CPalo) another).size())
+            return 0;
+        else if ((this.size()) > ((CPalo) another).size())
+            return 1;
+        else
+            return -1;
+	}	
 }
