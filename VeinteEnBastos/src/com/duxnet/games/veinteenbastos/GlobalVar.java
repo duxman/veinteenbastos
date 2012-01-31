@@ -8,6 +8,7 @@ public class GlobalVar
 	private Point m_DimPantalla;
 	private Point m_DimCartas;
 	private CBaraja m_Baraja;
+	private CJugada m_Jugada;
     private static GlobalVar instance;
     
 
@@ -57,6 +58,14 @@ public class GlobalVar
 			m_Baraja=new CBaraja(baraja.getBarajaCompleta(), baraja.getReversoCarta());
 		else
 			m_Baraja=baraja;			
+	}
+
+	public CJugada getJugada() {
+		return m_Jugada;
+	}
+
+	public void setJugada(CJugada jugada) {
+		m_Jugada = jugada;
 	}
 
 }
