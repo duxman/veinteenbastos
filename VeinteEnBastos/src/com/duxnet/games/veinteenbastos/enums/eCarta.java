@@ -2,12 +2,14 @@ package com.duxnet.games.veinteenbastos.enums;
 
 public enum eCarta 
 {
-	AS(1,11),DOS(2,0),TRES(3,10),CUATRO(4,0),CINCO(5,0),SEIS(6,0),SIETE(7,0),SOTA(8,3),CABALLO(9,2),REY(10,4);
+	AS(1,11,9),DOS(2,0,0),TRES(3,10,8),CUATRO(4,0,1),CINCO(5,0,2),SEIS(6,0,3),SIETE(7,0,4),SOTA(8,3,6),CABALLO(9,2,5),REY(10,4,7);
 	private final int id;
 	private final int valor;
-	private eCarta(int i,int v) {id=i;valor=v;}
+	private final int pos;
+	private eCarta(int i,int v,int p) {id=i;valor=v;pos=p;}
 	public int getValor() {return valor;}
 	public int getId() {return id;}
+	public int getPos() {return pos;}
 	public static eCarta getCarta(int i)
 	{		
 		switch(i)
@@ -35,5 +37,5 @@ public enum eCarta
 			default:
 				return null;											
 		}
-	}
+	}	
 }

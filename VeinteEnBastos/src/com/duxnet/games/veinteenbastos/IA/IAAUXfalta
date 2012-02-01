@@ -1,0 +1,212 @@
+
+/*********************************************************************************************/
+/* Funcion que devuelve la carta de descarte según un algoritmo general (válido casi siempre)*/
+/* Entrada: EstadoIA: estructura en la que se guardan los datos de la IA		     */
+/*	    carta: puntero a la carta de descarte					     */
+/*********************************************************************************************/
+void DescarteGeneral(struct tpEstadoIA *EstadoIA, struct tpcarta *Carta)
+{
+ bool descartado;
+
+ descartado = 0;
+ *Carta = EstadoIA->Mano.carta[0];
+ /*Buscamos echar una carta hasta caballo*/
+ if (EstadoIA->Palo1.N > 0){ /*Si EstadoIA.Palo1 == 0 entonces no se garantiza*/
+   if (EstadoIA->Palo1.Datos->medianas > 0) { /*que Palo1.Datos->medianas este apuntando*/
+     *Carta = EstadoIA->Palo1.Palo[0]; /*a un valor válido, lo mismo para el resto*/
+     descartado = 1;
+   }
+ }
+ if ((EstadoIA->Palo2.N > 0) && (descartado == 0)){
+   if (EstadoIA->Palo2.Datos->medianas > 0) {
+     *Carta = EstadoIA->Palo2.Palo[0];
+     descartado = 1;
+   }
+ }
+ if ((EstadoIA->Palo3.N > 0) && (descartado == 0)){
+   if (EstadoIA->Palo3.Datos->medianas > 0) {
+     *Carta = EstadoIA->Palo3.Palo[0];
+     descartado = 1;
+   }
+ }
+ /*Buscamos echar sota o rey, teniendo en cuenta no romper un cante*/
+ if ((EstadoIA->Palo1.N > 0) && (descartado == 0)) {
+   if ((EstadoIA->Palo1.Datos->haycante == 0) && ((EstadoIA->Palo1.Datos->sota == '1') || (EstadoIA->Palo1.Datos->rey == '1'))){
+     *Carta = EstadoIA->Palo1.Palo[0];
+     descartado = 1;
+   }
+ }
+ if ((EstadoIA->Palo2.N > 0) && (descartado == 0)) {
+   if ((EstadoIA->Palo2.Datos->haycante == 0) && ((EstadoIA->Palo2.Datos->sota == '1') || (EstadoIA->Palo2.Datos->rey == '1'))){
+     *Carta = EstadoIA->Palo2.Palo[0];
+     descartado = 1;
+   }
+ }
+ if ((EstadoIA->Palo3.N > 0) && (descartado == 0)) {
+   if ((EstadoIA->Palo3.Datos->haycante == 0) && ((EstadoIA->Palo3.Datos->sota == '1') || (EstadoIA->Palo3.Datos->rey == '1'))){
+     *Carta = EstadoIA->Palo3.Palo[0];
+     descartado = 1;
+   }
+ }
+ /*Buscamos echar triunfo pequeño*/
+ if ((EstadoIA->PaloT.N > 0) && (descartado == 0)) {
+   if (EstadoIA->PaloT.Datos->medianas > 0) {
+     if (EstadoIA->PaloT.Palo[0].valor != '4'){
+       *Carta = EstadoIA->PaloT.Palo[0];
+       descartado = 1;
+     }
+     else if (EstadoIA->Triunfo->valor <= '5') {
+       *Carta = EstadoIA->PaloT.Palo[0];
+       descartado = 1;
+     }
+     else if (EstadoIA->DatosTriunfo->caballo == '1') {
+       *Carta = EstadoIA->PaloT.Palo[1];
+       descartado = 1;
+     }
+   }
+ }
+ /*Buscamos echar un tres que tenga un as encima*/
+ if ((EstadoIA->Palo1.N > 1) && (descartado == 0)) {
+   if ((EstadoIA->Palo1.Datos->as == '1') && (EstadoIA->Palo1.Datos->tres == '1')) {
+     *Carta = EstadoIA->Palo1.Palo[EstadoIA->Palo1.N-2];
+     descartado = 1;
+   }
+ }
+ if ((EstadoIA->Palo2.N > 1) && (descartado == 0)) {
+   if ((EstadoIA->Palo2.Datos->as == '1') && (EstadoIA->Palo2.Datos->tres == '1')) {
+     *Carta = EstadoIA->Palo2.Palo[EstadoIA->Palo2.N-2];
+     descartado = 1;
+   }
+ }
+ if ((EstadoIA->Palo3.N > 1) && (descartado == 0)) {
+   if ((EstadoIA->Palo3.Datos->as == '1') && (EstadoIA->Palo3.Datos->tres == '1')) {
+     *Carta = EstadoIA->Palo3.Palo[EstadoIA->Palo3.N-2];
+     descartado = 1;
+   }
+ }
+ /*Buscamos echar una bresca cualquiera*/
+ if ((EstadoIA->Palo1.N > 0) && (descartado == 0)) {
+   if ((EstadoIA->Palo1.Datos->as == '1') || (EstadoIA->Palo1.Datos->tres == '1')) {
+     *Carta = EstadoIA->Palo1.Palo[EstadoIA->Palo1.N-1];
+     descartado = 1;
+   }
+ }
+ if ((EstadoIA->Palo2.N > 0) && (descartado == 0)) {
+   if ((EstadoIA->Palo2.Datos->as == '1') || (EstadoIA->Palo2.Datos->tres == '1')) {
+     *Carta = EstadoIA->Palo2.Palo[EstadoIA->Palo2.N-1];
+     descartado = 1;
+   }
+ }
+ if ((EstadoIA->Palo3.N > 0) && (descartado == 0)) {
+   if ((EstadoIA->Palo3.Datos->as == '1') || (EstadoIA->Palo3.Datos->tres == '1')) {
+     *Carta = EstadoIA->Palo3.Palo[EstadoIA->Palo3.N-1];
+   }
+ }
+}
+
+/*********************************************************************************************/
+/* Funcion que devuelve la carta de descarte evitando descartarse del mismo palo que el      */
+/* compañero (válido sólo si turno es igual a tres o cuatro)
+/* Entrada: EstadoIA: estructura en la que se guardan los datos de la IA		     */
+/*	    carta: puntero a la carta de descarte					     */
+/*********************************************************************************************/
+void DescartarCartaDiferente(struct tpEstadoIA *EstadoIA, struct tpcarta *Carta)
+{
+ struct tpcarta cartadescarte,cartadescarte2;
+ int N,numPalo;
+
+ DescarteGeneral(EstadoIA,&cartadescarte);
+ /*Eliminamos virtualmente de EstadoIA las cartas del palo de la carta del compañero*/
+ numPalo = 0;
+ if (EstadoIA->Palo1.N > 0){
+   if (EstadoIA->Palo1.Palo[0].palo == EstadoIA->cartaComp.palo){
+     N = EstadoIA->Palo1.N;
+     EstadoIA->Palo1.N = 0;
+     numPalo = 1;
+   }
+ }
+ if (EstadoIA->Palo2.N > 0){
+   if (EstadoIA->Palo2.Palo[0].palo == EstadoIA->cartaComp.palo){
+     N = EstadoIA->Palo2.N;
+     EstadoIA->Palo2.N = 0;
+     numPalo = 2;
+   }
+ }
+ if (EstadoIA->Palo3.N > 0){
+   if (EstadoIA->Palo3.Palo[0].palo == EstadoIA->cartaComp.palo){
+     N = EstadoIA->Palo3.N;
+     EstadoIA->Palo3.N = 0;
+     numPalo = 3;
+   }
+ }
+ DescarteGeneral(EstadoIA,&cartadescarte2);
+ /*Restauramos EstadoIA*/
+ if (numPalo == 1){
+   EstadoIA->Palo1.N = N;
+ }
+ else if (numPalo == 2){
+   EstadoIA->Palo2.N = N;
+ }
+ else  if (numPalo == 3){
+   EstadoIA->Palo3.N = N;
+ }
+ /*Si la carta que nos descartamos de DescarteGeneral es ya distinta del palo de la carta del compañero per se,
+  o bien ambas posibilidades de descarte son iguales (o sea, que no hay otra posible), nos descartamos de cartadescarte*/
+ if (((cartadescarte.valor <= '7') && (cartadescarte.palo != EstadoIA->cartaComp.palo))
+    || ((cartadescarte.palo == cartadescarte2.palo) && (cartadescarte.valor == cartadescarte2.valor))) {
+   *Carta = cartadescarte;
+ }
+ else { /*Si son diferentes, entonces consideramos la posibilidad del segundo descarte frente al primero*/
+   if ( ((cartadescarte.palo == EstadoIA->cartaComp.palo) && (cartadescarte.valor <= '7') && (cartadescarte2.valor > '7'))
+       || (cartadescarte2.palo == EstadoIA->Triunfo->palo)
+       || ((nCartasPalo(EstadoIA,cartadescarte.palo) + 2) <= nCartasPalo(EstadoIA,cartadescarte2.palo)))
+   {
+     *Carta = cartadescarte;
+   }
+   else {
+     *Carta = cartadescarte2;
+   }
+ }
+}
+
+/*********************************************************************************************/
+/* Funcion que devuelve la carta de descarte haciendo especial incapié en las cartas	     */
+/* solitarias (válido sólo si ronda es igual a cuatro)			     		     */
+/* Entrada: EstadoIA: estructura en la que se guardan los datos de la IA		     */
+/*	    carta: puntero a la carta de descarte					     */
+/*********************************************************************************************/
+void DescarteEspecial(struct tpEstadoIA *EstadoIA, struct tpcarta *Carta)
+{
+ if (EstadoIA->Palo1.N == 1){/*la carta suelta más pequeña y distinta de triunfo, si la hay, estara en Palo1*/
+   if ((EstadoIA->Palo1.Datos->as != '1') && (EstadoIA->Palo1.Datos->tres != '1')){
+     /*Nos aseguramos de que no es una bresca*/
+     *Carta = EstadoIA->Palo1.Palo[0];
+   }
+   else {
+     DescarteGeneral(EstadoIA,Carta);
+   }
+ }
+ else {
+   DescarteGeneral(EstadoIA,Carta);
+ }
+}
+
+/*********************************************************************************************/
+/* Funcion que devuelve la carta de descarte, llama a una de las tres anteriores segun las   */
+/* circunstancias y el estado de la partida						     */
+/* Entrada: EstadoIA: estructura en la que se guardan los datos de la IA		     */
+/*	    carta: puntero a la carta de descarte					     */
+/*********************************************************************************************/
+void Descarte(struct tpEstadoIA *EstadoIA, struct tpcarta *Carta)
+{
+ if ((*EstadoIA->num_ronda != 4) && (EstadoIA->turno > 2) && (EstadoIA->dificil == 1)){
+   DescartarCartaDiferente(EstadoIA,Carta);
+   }
+ else if ((*EstadoIA->num_ronda == 4) && (*EstadoIA->ultimas == 0) && (EstadoIA->dificil == 1)){
+   DescarteEspecial(EstadoIA,Carta);
+   }
+ else {
+   DescarteGeneral(EstadoIA,Carta);
+ }
+}
+

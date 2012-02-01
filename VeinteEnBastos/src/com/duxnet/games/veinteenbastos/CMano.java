@@ -1,6 +1,9 @@
 package com.duxnet.games.veinteenbastos;
 
 import java.util.Iterator;
+
+import com.duxnet.games.veinteenbastos.enums.ePalo;
+
 import android.graphics.Canvas;
 
 public class CMano  extends CListaCartas
@@ -20,6 +23,10 @@ public class CMano  extends CListaCartas
 	public CCarta TirarCarta()
 	{
 		return tirarCarta(DecidirCarta());					
+	}
+	public int NumBrescas(ePalo p)
+	{
+		return NumCartas(p, 8);
 	}
 	private int DecidirCarta() 
 	{

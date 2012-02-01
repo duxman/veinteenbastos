@@ -16,7 +16,7 @@ public class CBaraja extends CListaCartas
 	private int m_AnchoPalo;
 	private Bitmap m_BarajaCompleta;
 	private Bitmap m_ReversoCarta;
-	public List<CPalo> m_Palos;	
+	private List<CPalo> m_Palos;	
 	
 	//==================================================
 	// Constructores
@@ -46,12 +46,12 @@ public class CBaraja extends CListaCartas
 	{		
 	    int srcY ;
 	    int srcX ; 
-	    m_Palos=new ArrayList<CPalo>();
+	    setPalos(new ArrayList<CPalo>());
 		for(int contPalo=0;contPalo<4;contPalo++)
 		{						
 			srcY=contPalo*getAltoCarta();						
 			Bitmap BmpPalo=Bitmap.createBitmap(getBarajaCompleta(), 0, srcY, getAnchoPalo(), getAltoCarta());
-			m_Palos.add(new CPalo(contPalo, BmpPalo));			
+			getPalos().add(new CPalo(contPalo, BmpPalo));			
 			for(int contCarta=1;contCarta<11;contCarta++)
 			{				
 				srcX=(contCarta-1)*getAnchoCarta();				
@@ -97,5 +97,13 @@ public class CBaraja extends CListaCartas
 	}
 	public void setReversoCarta(Bitmap reversoCarta) {
 		m_ReversoCarta = reversoCarta;
+	}
+
+	public List<CPalo> getPalos() {
+		return m_Palos;
+	}
+
+	public void setPalos(List<CPalo> palos) {
+		m_Palos = palos;
 	}		
 }

@@ -1,6 +1,9 @@
 package com.duxnet.games.veinteenbastos;
+import java.util.Iterator;
+
 import android.graphics.Bitmap;
 import com.duxnet.games.veinteenbastos.IA.*;
+import com.duxnet.games.veinteenbastos.enums.eCarta;
 import com.duxnet.games.veinteenbastos.enums.ePalo;
 
 
@@ -15,7 +18,21 @@ public class CPalo extends CListaCartas implements Comparable<Object>
 		setPaloBaraja(Palo);
 		setDatos(new CIADatos());
 		bmpPalo=palo;	
-	}	
+	}
+	public CPalo()
+	{			
+	}
+	public boolean TieneECarta(eCarta ec)
+	{
+		boolean rtn=false;
+		Iterator<CCarta> it=iterator();
+		while(!rtn && it.hasNext())
+		{
+			if(ec==it.next().getECarta())
+				rtn=true;			
+		}		
+		return rtn;
+	}
 	public Bitmap getBitmap()
 	{
 		return bmpPalo;
@@ -35,7 +52,7 @@ public class CPalo extends CListaCartas implements Comparable<Object>
 	}
 	public void setDatos(CIADatos datos) {
 		m_Datos = datos;
-	}
+	}	
 	public int compareTo(Object another) 
 	{
 		if (this.size()== ((CPalo) another).size())
