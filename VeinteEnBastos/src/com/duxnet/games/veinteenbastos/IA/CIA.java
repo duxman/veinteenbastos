@@ -95,18 +95,15 @@ public class CIA
 	public void TirarCarta(CCarta Carta)
 	{
 		getEstado().miTurno=getEstado().turno;
-		if (getEstado().turno == 1)
-			getEstado().turnoComp = 3;			
-		else if (getEstado().turno == 2)
-			getEstado().turnoComp = 4;			 
-		else if (getEstado().turno == 3)			 
-			getEstado().turnoComp = 1;		
-		else if (getEstado().turno == 4)
-			getEstado().turnoComp = 2;
-		
-		 //getEstado().cartaComp = getEstado().Mesa.jugador2;
-		 //getEstado().cartaComp = getEstado().Mesa.jugador1;
-		//DAVID ????: en donde pone vueltas antes ponia otra vez ultimas
+		if (getEstado().turno <=2 )
+		{
+			getEstado().turnoComp=getEstado().miTurno+2;
+		}					
+		else if (getEstado().turno >= 3)
+		{			
+			getEstado().turnoComp = getEstado().miTurno-2;
+			getEstado().cartaComp=getEstado().Mesa.get(getEstado().turnoComp-1);
+		}						 
 		
 		if (!getEstado().ultimas && !getEstado().vueltas)
 		 {
@@ -272,18 +269,19 @@ public class CIA
 	public boolean vaNuestra()
 	{
 	 ///Repensar como saber esto creo que lo tengo en jugada
-		/*if (getEstado().turno == 3)
-	 {
-	   return cartaMayor(&EstadoIA->Mesa.jugador1,&EstadoIA->Mesa.jugador2,EstadoIA->Triunfo->palo);
-	 }
-	 else { //turno == 4
-	   return (
-	   		//carta del jugador 1 no sea mayor que la carta del jugador2
-	           (cartaMayor(&EstadoIA->Mesa.jugador1,&EstadoIA->Mesa.jugador2,EstadoIA->Triunfo->palo)== false)
-	           //una vez que la carta del jugador2 manda sobre la del 1, entonces tiene que ser mayor que la del tres
-	           && cartaMayor(&EstadoIA->Mesa.jugador2,&EstadoIA->Mesa.jugador3,EstadoIA->Triunfo->palo));
-	 }*/
-		return false;
+		boolean rtn=false;
+		if (getEstado().turno == 3)
+		{
+			rtn=cartaMayor(getEstado().Mesa.get(0),getEstado().Mesa.get(1),getEstado().Triunfo.getPaloCarta());
+		}
+		else 
+		{ //turno == 4
+			boolean  jugadores12,jugadores23;			   	
+	        jugadores12=(cartaMayor(getEstado().Mesa.get(0),getEstado().Mesa.get(1),getEstado().Triunfo.getPaloCarta())==false);
+	        jugadores23=(cartaMayor(getEstado().Mesa.get(1),getEstado().Mesa.get(2),getEstado().Triunfo.getPaloCarta()));
+	        rtn=(jugadores12 && jugadores23);	           
+		}
+		return rtn;
 	}
 	public boolean CambioTriunfo(CCarta c)
 	{	 		
@@ -336,9 +334,9 @@ public class CIA
 	public void RobaCartaIA( CCarta Carta)
 	{
 		 CIADatos misDatos;
-		 CPalo miPalo,miPaloTemp;	 
+		 CPalo miPalo;	 
 		 boolean colocado;
-		 int n,i; //contadores
+		 int n; //contadores
 		 int idx=getEstado().Palos.indexOf(Carta.getPaloCarta());
 		 misDatos=getEstado().Palos.get(idx).getDatos();
 		 //Miramos su valor y modificamos los datos necesarios
@@ -490,7 +488,7 @@ public class CIA
 		}		
 		getEstado().turno++;		
 	}
-	public CCarta DescarteGeneral()
+	public CCarta DescarteBasico()
 	{
 		boolean descartado=false;
 		CCarta rtn=null;
@@ -565,12 +563,12 @@ public class CIA
 		}
 		return rtn;
 	}
-	public CCarta DescartarCartaDiferente()
+	public CCarta DescartarCartaSegundo()
 	{
 			CCarta rtn,cartadescarte,cartadescarte2 = null;		
-			int N,numPalo,icd,icd2;
+			int icd,icd2;
 	
-			cartadescarte=DescarteGeneral();
+			cartadescarte=DescarteBasico();
 			Iterator<CPalo> it = getEstado().Palos.iterator();
 			while(it.hasNext())
 			{
@@ -579,7 +577,7 @@ public class CIA
 				{
 					//Eliminamos el palo del compañero y volvemos a eleguir la mejor carta
 					getEstado().Palos.remove(p);
-					cartadescarte2=DescarteGeneral();
+					cartadescarte2=DescarteBasico();
 					if(cartadescarte2==null)
 						cartadescarte2=cartadescarte;
 					getEstado().Palos.add(p);				
@@ -607,4 +605,35 @@ public class CIA
 			}
 			return rtn;
 	 }	
+	public CCarta DescarteSolitario()
+	{
+		CCarta rtn;
+		if(getEstado().Palos.get(0).size()==1)
+		{
+			if(getEstado().Palos.get(0).getDatos().as!=1 && getEstado().Palos.get(0).getDatos().tres!=1)
+				rtn=getEstado().Palos.get(0).DamePrimeraCarta(false);			
+			else
+				rtn=DescarteBasico();
+		}
+		else
+			rtn=DescarteBasico();
+		return rtn;	 
+	}
+	public CCarta Descarte()
+	{
+		CCarta rtn;
+		if ((getEstado().num_ronda!= 4) && (getEstado().turno > 2) && getEstado().dificil)
+		{
+			   rtn=DescartarCartaSegundo();
+		}
+		else if (getEstado().num_ronda == 4 && !getEstado().ultimas && getEstado().dificil)
+		{
+			rtn=DescarteSolitario();
+		}
+		else
+		{
+			rtn=DescarteBasico();
+		}
+		return rtn;
+	}		 
 }
