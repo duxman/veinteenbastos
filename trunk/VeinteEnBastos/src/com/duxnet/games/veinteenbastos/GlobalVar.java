@@ -99,6 +99,7 @@ public class GlobalVar
 		m_Estado=new CIAEstado();
 		return m_Estado;		
 	}
+	
 	public void setEstado(CIAEstado estado)
 	{
 		m_Estado = estado;

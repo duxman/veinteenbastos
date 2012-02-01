@@ -30,83 +30,262 @@ public class CIA
 		m_Estado=getGloval().CreaEstado();
 	}
 	
-	void FinRondaIA()	
+	public void QuitarCarta(CCarta Carta)
+	{
+		 CPalo miPalo=null;		 			 
+		
+		 /*Quitamos la carta de la mano*/		 
+		 getEstado().Mano.remove(Carta);
+		 		 	
+		 /*Buscamos el PaloX asociado al palo de Carta*/
+		 if (Carta.getPaloCarta() == getEstado().Triunfo.getPaloCarta())
+		 {
+		   miPalo = getEstado().PaloTriunfo;
+		 }
+		 else
+		 {
+			 Iterator<CPalo> it=getEstado().Palos.iterator();
+			 while(it.hasNext())
+			 {
+				 CPalo p=it.next();
+				 if(Carta.getPaloCarta()==p.getEPalo())
+					 miPalo=p;
+			 }		
+		 }
+		 switch(Carta.getECarta())
+		 {
+		 	case AS:
+		 		miPalo.getDatos().as = 2;	
+		 	break;
+		 	case TRES:
+		 		miPalo.getDatos().tres=2;	
+		 	break;
+		 	case REY:
+		 		miPalo.getDatos().rey=2;		 	 	 	
+		 	break;
+		 	case SOTA:		 	
+		 		miPalo.getDatos().sota=2;			 	 	 
+			break;
+		 	case CABALLO:
+		 		miPalo.getDatos().caballo=2;
+		 		miPalo.getDatos().medianas++;
+		 	break;
+		 	default:
+		 		miPalo.getDatos().pequenas--;
+		 		miPalo.getDatos().medianas--;
+		 	break;	 
+		 }	
+		 Collections.sort(getEstado().Palos);		 			
+	}
+	
+	void TirarCarta(CCarta Carta)
+	{
+		getEstado().miTurno=getEstado().turno;
+		if (getEstado().turno == 1)
+			getEstado().turnoComp = 3;			
+		else if (getEstado().turno == 2)
+			getEstado().turnoComp = 4;			 
+		else if (getEstado().turno == 3)			 
+			getEstado().turnoComp = 1;		
+		else if (getEstado().turno == 4)
+			getEstado().turnoComp = 2;
+		
+		 //getEstado().cartaComp = getEstado().Mesa.jugador2;
+		 //getEstado().cartaComp = getEstado().Mesa.jugador1;
+		//DAVID ????: en donde pone vueltas antes ponia otra vez ultimas
+		
+		if (!getEstado().ultimas && !getEstado().vueltas)
+		 {
+		   Idas(Carta);  //printf("idas\n");
+		 }
+		 else if (getEstado().ultimas) 
+		 {
+		   Arrastre(Carta); //printf("arrastre\n");
+		 }
+		 else{
+		   Vueltas(Carta);  //printf("vueltas\n");
+		 }		 
+		 //printf("carta echada: %c%c\n",Carta.getPaloCarta(),Carta->valor);
+		 QuitarCarta(Carta);
+	}
+
+	
+	
+	int TriunfosEnMesa()
+	{
+		int n=0;		
+		Iterator<CCarta> it = getEstado().Mesa.iterator();
+		while(it.hasNext())
+		{
+			if(it.next().getPaloCarta()==getEstado().Triunfo.getPaloCarta())
+				n++;
+		}			  
+		return n;
+	}
+	
+	public void FinRondaIA()	
 	{
 	 /*Inicializamos algunas variables de la ronda*/
-	 EstadoIA->turnoComp = 0;
-	 EstadoIA->turno = 1;
-	 EstadoIA->puntosMesa = 0;
-	 EstadoIA->miTurno = 0;
+		 getEstado().turnoComp = 0;
+		 getEstado().turno = 1;
+		 getEstado().miTurno = 0;
+		 //getEstado().Mesa.cpuntosMesa = 0;
 
-	 /*Comprobamos si es la ronda 4 de Idas o Vueltas, y en consecuencia comienza las
-	   jugadas del arrastre*/
-	 if ((*EstadoIA->num_ronda == 4) && (*EstadoIA->ultimas == 0)){
-	   /*Comienza el arrastre*/
-	   EstadoIA->nTriunfosIniciales = EstadoIA->PaloT.N;
-	   if (EstadoIA->PaloT.N >= 3){
-	     if ((EstadoIA->PaloT.Palo[EstadoIA->PaloT.N-1].valor == '9')
-	       && (EstadoIA->PaloT.Palo[EstadoIA->PaloT.N-2].valor == '8')
-	       && (EstadoIA->PaloT.Palo[EstadoIA->PaloT.N-3].valor == '7')){
-	       EstadoIA->JugadaTriunfo = 1; /*Tiene los tres triunfos más altos*/
-	     }
-	   }
-	   if ((EstadoIA->PaloT.N >= 2) && (EstadoIA->JugadaTriunfo == 0)){
-	     if ((EstadoIA->PaloT.Palo[EstadoIA->PaloT.N-1].valor == '9')
-	       && (EstadoIA->PaloT.Palo[EstadoIA->PaloT.N-2].valor == '8')){
-	       EstadoIA->JugadaTriunfo = 2; /*Tiene los dos triunfos más altos*/
-	     }
-	   }
+		 /*Comprobamos si es la ronda 4 de Idas o Vueltas, y en consecuencia comienza las
+		   jugadas del arrastre*/
+		 if (getEstado().num_ronda == 4 && !getEstado().ultimas)
+		 {
+		   /*Comienza el arrastre*/
+		   getEstado().nTriunfosIniciales = getEstado().PaloTriunfo.size();
+		   if (getEstado().PaloTriunfo.size() >= 3)
+		   {
+			  if(getEstado().PaloTriunfo.TieneECarta(eCarta.AS) && getEstado().PaloTriunfo.TieneECarta(eCarta.TRES) && getEstado().PaloTriunfo.TieneECarta(eCarta.REY))
+			  {
+				  getEstado().JugadaTriunfo = 1; /*Tiene los tres triunfos más altos*/
+			  }
+		   }
+		   if ((getEstado().PaloTriunfo.size() >= 3) && (getEstado().JugadaTriunfo == 0))
+		   {
+		     if (getEstado().PaloTriunfo.TieneECarta(eCarta.AS) && getEstado().PaloTriunfo.TieneECarta(eCarta.TRES))
+		     {
+		    	 getEstado().JugadaTriunfo = 2; /*Tiene los dos triunfos más altos*/
+		     }
+		   }
+		 }	 
+		 if ((getEstado().nTriunfosIniciales == 5) && (getEstado().num_ronda == 1))
+		 {
+		   if (getEstado().JugadaTriunfo == 1) 
+		   {
+			   if((TriunfosEnMesa() == 2) && (getEstado().PaloTriunfo.getDatos().quedanporsalir >= 3 || getEstado().cartaComp.getPaloCarta()== getEstado().Triunfo.getPaloCarta()))
+			   {
+				   getEstado().JugadaTriunfo = 3;
+			   }
+			   if (((TriunfosEnMesa() == 2) && (getEstado().PaloTriunfo.getDatos().quedanporsalir <= 2)) || (TriunfosEnMesa() == 3) || (TriunfosEnMesa() == 4))
+			   {
+				   getEstado().JugadaTriunfo = 1;
+			   }
+		   }
+		   else if (getEstado().JugadaTriunfo == 2) 
+		   {
+		     if (((TriunfosEnMesa() == 2) && (getEstado().PaloTriunfo.getDatos().quedanporsalir >= 2)) || ((TriunfosEnMesa() == 2) && (getEstado().cartaComp.getPaloCarta() == getEstado().Triunfo.getPaloCarta())))
+		     {
+		       getEstado().JugadaTriunfo = 3;
+		     }
+		     else if ((TriunfosEnMesa() == 3) && (getEstado().PaloTriunfo.getDatos().quedanporsalir == 2)) 
+		     {
+		       getEstado().JugadaTriunfo = 4;
+		     }
+		     else 
+		     {
+		       getEstado().JugadaTriunfo = 2;
+		     }
+		   }
+		 }
+		 if (getEstado().nTriunfosIniciales == 4) 
+		 {
+		   if ((getEstado().JugadaTriunfo == 5) && (getEstado().num_ronda == 1))
+		   {
+			   if ((TriunfosEnMesa() == 2) && (getEstado().cartaComp.getPaloCarta() == getEstado().Triunfo.getPaloCarta()))
+			   {
+				   getEstado().JugadaTriunfo = 3;
+			   }
+			   else if ((TriunfosEnMesa() == 3) || (TriunfosEnMesa() == 2))
+			   {
+				   getEstado().JugadaTriunfo = 6;
+			   }
+		   }
+		   if ((getEstado().JugadaTriunfo == 5) && (getEstado().num_ronda == 2) && (TriunfosEnMesa() == 2))
+		   {
+			   getEstado().JugadaTriunfo = 3;
+		   }
+		 }
+	}	
+	public CCarta puedoMontar(CCarta laCarta, char limite)
+	{
+	 CCarta rtn=null;
+	 boolean encontrado=false;	 
+	 
+	 CPalo paloTemp=new CPalo();
+	 if(laCarta.getPaloCarta()!=getEstado().Triunfo.getPaloCarta())
+	 {
+		 Iterator<CPalo> it = getEstado().Palos.iterator();
+		 while(!encontrado && it.hasNext())
+		 {
+			 paloTemp=it.next();			 
+			 if(paloTemp.getEPalo()==laCarta.getPaloCarta())
+				 encontrado=true;				
+		 }		 		 
+		 if(encontrado)
+		 {
+			 Iterator<CCarta> it1=paloTemp.iterator();
+			 CCarta ctmp;
+			 encontrado=false;
+			 while(!encontrado && it1.hasNext())
+			 {
+				 ctmp=it1.next();
+				 if(ctmp.getPosCarta()>laCarta.getPosCarta() && ctmp.getPosCarta()<=limite 
+						 && ((ctmp.getECarta()!=eCarta.SOTA && ctmp.getECarta()!=eCarta.REY) 
+						 || (ctmp.getECarta()!=eCarta.SOTA && !paloTemp.getDatos().haycante) 
+						 || (ctmp.getECarta()!=eCarta.REY && !paloTemp.getDatos().haycante)))
+				{
+					 encontrado=true;
+					 rtn=ctmp;
+				}				 				 
+			 }			 
+		 }
+	 }		 			 
+	 return rtn;
+	}
+	public boolean cartaMayor(CCarta carta1, CCarta carta2, ePalo triunfo)
+	{
+		 if ((carta1.getPaloCarta() == triunfo)&&(carta2.getPaloCarta() != triunfo))
+		 {
+		   return true;
+		 }
+		 else if ((carta1.getPaloCarta() != triunfo)&&(carta2.getPaloCarta() == triunfo))
+		 {
+		   return false;
+		 }
+		 else if (carta1.getPaloCarta() != carta2.getPaloCarta())
+		 {
+		   return true;
+		 }
+		 else if((carta1.getPaloCarta() == carta2.getPaloCarta()) && (carta1.getPosCarta() > carta2.getPosCarta()))
+		 {
+		   return true;
+		 }
+		 else 
+		 {
+		   return false;
+		 }
+	}
+	public boolean vaNuestra()
+	{
+	 ///Repensar como saber esto creo que lo tengo en jugada
+		/*if (getEstado().turno == 3)
+	 {
+	   return cartaMayor(&EstadoIA->Mesa.jugador1,&EstadoIA->Mesa.jugador2,EstadoIA->Triunfo->palo);
 	 }
-	 /*Condiciones especiales del arrastre*/
-	 if ((EstadoIA->nTriunfosIniciales == 5) && (*EstadoIA->num_ronda == 1)){
-	   if (EstadoIA->JugadaTriunfo == 1) {
-	     if (((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->PaloT.Datos->quedanporsalir >= 3))
-	         || ((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->cartaComp.palo == EstadoIA->Triunfo->palo))){
-	       EstadoIA->JugadaTriunfo = 3;
-	     }
-	     if (((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->PaloT.Datos->quedanporsalir <= 2))
-	         || (nTriunfosMesa(EstadoIA) == 3) || (nTriunfosMesa(EstadoIA) == 4)){
-	       EstadoIA->JugadaTriunfo = 1;
-	     }
-	   }
-	   else if (EstadoIA->JugadaTriunfo == 2) {
-	     if (((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->PaloT.Datos->quedanporsalir >= 2))
-	         || ((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->cartaComp.palo == EstadoIA->Triunfo->palo))){
-	       EstadoIA->JugadaTriunfo = 3;
-	     }
-	     else if ((nTriunfosMesa(EstadoIA) == 3) && (EstadoIA->PaloT.Datos->quedanporsalir == 2)) {
-	       EstadoIA->JugadaTriunfo = 4;
-	     }
-	     else {
-	       EstadoIA->JugadaTriunfo = 2;
-	     }
-	   }
-	 }/*nº de triunfos iniciales 5*/
-
-	 if (EstadoIA->nTriunfosIniciales == 4) {
-	   if ((EstadoIA->JugadaTriunfo == 5) && (*EstadoIA->num_ronda == 1)){
-	     if ((nTriunfosMesa(EstadoIA) == 2) && (EstadoIA->cartaComp.palo == EstadoIA->Triunfo->palo)){
-	       EstadoIA->JugadaTriunfo = 3;
-	       }
-	     else if ((nTriunfosMesa(EstadoIA) == 3) || (nTriunfosMesa(EstadoIA) == 2)){
-	       EstadoIA->JugadaTriunfo = 6;
-	     }
-	   }
-	   if ((EstadoIA->JugadaTriunfo == 5) && (*EstadoIA->num_ronda == 2) && (nTriunfosMesa(EstadoIA) == 2)){
-	     EstadoIA->JugadaTriunfo = 3;
-	   }
-	 }/*fin nº de triunfos iniciales 4*/
+	 else { //turno == 4
+	   return (
+	   		//carta del jugador 1 no sea mayor que la carta del jugador2
+	           (cartaMayor(&EstadoIA->Mesa.jugador1,&EstadoIA->Mesa.jugador2,EstadoIA->Triunfo->palo)== false)
+	           //una vez que la carta del jugador2 manda sobre la del 1, entonces tiene que ser mayor que la del tres
+	           && cartaMayor(&EstadoIA->Mesa.jugador2,&EstadoIA->Mesa.jugador3,EstadoIA->Triunfo->palo));
+	 }*/
+		return false;
 	}
 	public boolean CambioTriunfo(CCarta c)
 	{	 		
-	 if ((getEstado().num_ronda == 4 || getEstado().vueltas) && (tieneCarta(c)) && (getEstado().Triunfo.getIdCarta() >= c.getIdCarta()))
-	 {
+		boolean rtn=false;
+		if ((getEstado().num_ronda == 4 || getEstado().vueltas) && (getEstado().Mano.tieneCarta(c) && (getEstado().Triunfo.getIdCarta() >= c.getIdCarta())))
+		{
 
-	     QuitarCarta(c);
-	     RobaCartaIA(getEstado().Triunfo);
-	     return true;
-	 }
-	 return false;
+			QuitarCarta(c);
+			RobaCartaIA(getEstado().Triunfo);
+			rtn=true;
+		}
+		return rtn;
 	}
 	public void AnularCantes(String acciones)
 	{
@@ -120,13 +299,11 @@ public class CIA
 				palo.getDatos().haycante=false;					
 		}
 	}
-	
-	void CambiarSiete(CCarta c)
+	public void CambiarSiete(CCarta c)
 	{	 
 	 QuitarCarta(c);
 	 RobaCartaIA(getEstado().Triunfo);
 	}
-	
 	public String PuedoCantar(String acciones)
 	{
 		String rtn=acciones;
@@ -146,7 +323,6 @@ public class CIA
 		rtn=String.valueOf(aux);
 		return rtn;
 	}
-	
 	public void RobaCartaIA( CCarta Carta)
 	{
 		 CIADatos misDatos;

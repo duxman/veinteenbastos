@@ -14,6 +14,7 @@ public class CCarta implements Comparable<Object>
     //==================================================================
 	private long m_PesoOrden;
 	private int m_ValorCarta;
+	private int m_PosCarta;
 	private int m_IdCarta;
 	private ePalo  m_PaloCarta;
 	private eCarta m_TipoCarta;
@@ -39,6 +40,7 @@ public class CCarta implements Comparable<Object>
 		setImagenCarta(bmpcarta);
 		setFondoCarta(fondo);
 		setValorCarta(getTipoCarta().getValor());
+		setPosCarta(getTipoCarta().getPos());
 		setOrdinalCarta(10*(palo)+(carta-1));
 		setIdCarta(carta);
 		setNombreCarta(getTipoCarta().name() + " de "+ getPaloCarta().name());
@@ -85,6 +87,7 @@ public class CCarta implements Comparable<Object>
         else
             return -1;
 	}
+	
 	public void PintarBorde(Canvas canvas)
 	{
 		Paint p=new Paint();
@@ -268,5 +271,13 @@ public class CCarta implements Comparable<Object>
 
 	public void setOcupacionCarta(eLugar ocupacionCarta) {
 		m_OcupacionCarta = ocupacionCarta;
+	}
+
+	public int getPosCarta() {
+		return m_PosCarta;
+	}
+
+	public void setPosCarta(int posCarta) {
+		m_PosCarta = posCarta;
 	}
 }

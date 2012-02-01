@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.duxnet.games.veinteenbastos.enums.ePalo;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,6 +28,40 @@ public class CListaCartas implements List<CCarta>
 	//==================================================
 	// Metodos
 	//==================================================
+	public int NumCartas()
+	{
+		return size();
+	}
+	public boolean tieneCarta(CCarta Carta)
+	{
+		boolean rtn=false;
+		if(indexOf(Carta)>=0)
+			rtn=true;		
+		return rtn;
+	}
+	public int NumCartas(ePalo p)
+	{
+		int rtn=0;
+		Iterator<CCarta> it =iterator();
+		while(it.hasNext())
+		{
+			if(it.next().getPaloCarta()==p)
+				rtn++;
+		}
+		return rtn;		
+	}
+	public int NumCartas(ePalo p,int valor)
+	{
+		int rtn=0;
+		Iterator<CCarta> it =iterator();
+		while(it.hasNext())
+		{
+			CCarta c=it.next();
+			if(c.getPaloCarta()==p && c.getPosCarta()>=valor )
+				rtn++;
+		}
+		return rtn;		
+	}
 	public CCarta DamePrimeraCarta()
 	{
 		return DamePrimeraCarta(true);
