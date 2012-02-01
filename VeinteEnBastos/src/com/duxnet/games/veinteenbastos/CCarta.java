@@ -62,9 +62,9 @@ public class CCarta implements Comparable<Object>
 	
 	public int compareTo(Object another) 
 	{
-		if (this.getPesoOrden()== ((CCarta) another).getPesoOrden())
+		if (this.getPosCarta()== ((CCarta) another).getPosCarta())
             return 0;
-        else if ((this.getPesoOrden()) > ((CCarta) another).getPesoOrden())
+        else if ((this.getPosCarta()) > ((CCarta) another).getPosCarta())
             return 1;
         else
             return -1;
