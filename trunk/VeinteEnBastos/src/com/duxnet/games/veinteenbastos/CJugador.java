@@ -1,9 +1,12 @@
 package com.duxnet.games.veinteenbastos;
 
+import java.util.Iterator;
+
 import android.graphics.Canvas;
 import android.graphics.Point;
 
 import com.duxnet.games.veinteenbastos.IA.CEstado;
+import com.duxnet.games.veinteenbastos.IA.CIA;
 import com.duxnet.games.veinteenbastos.enums.ePosicion;
 
 public class CJugador extends CEstado
@@ -17,6 +20,7 @@ public class CJugador extends CEstado
 	private boolean Horizontal;
 	private Point p;
 	private Point c;
+	private CIA MiCerebro;
 	
 	public CJugador(String n,int nj,boolean r,ePosicion e)
 	{				
@@ -28,7 +32,17 @@ public class CJugador extends CEstado
 		setPosicion(e);
 		setMano(new CMano());
 		setLugar(new Point());
-		
+		MiCerebro= new CIA(this);		
+	}
+	public void Procesando(CCarta c)
+	{		
+		///Implementar nuevo metodo al que se le pase ademas el nivel para contar mas o menos
+		///Partimos de la premisa que con mas datos el sitema elegira mejor la carta a tirar
+		MiCerebro.ActualizarJugada(c);
+	}
+	public void MeToca()
+	{
+		///Implementar los metodos de juego de los jugadores;		
 	}
 	public void Pintar(Canvas canvas)
 	{	
