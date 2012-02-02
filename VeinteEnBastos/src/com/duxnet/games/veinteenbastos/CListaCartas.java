@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.duxnet.games.veinteenbastos.IA.CDatos;
+import com.duxnet.games.veinteenbastos.enums.eCarta;
 import com.duxnet.games.veinteenbastos.enums.ePalo;
 
 import android.graphics.Canvas;
@@ -14,7 +16,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 
-public class CListaCartas implements List<CCarta>
+public class CListaCartas extends CDatos implements List<CCarta>
 {
 	private List<CCarta> Cartas;		
 	//==================================================
@@ -25,19 +27,41 @@ public class CListaCartas implements List<CCarta>
 		
 		Cartas=new ArrayList<CCarta>();			
 	}
+	//==================================================================
+    // Metodos Ordenadores
+    //==================================================================
+	public void Ordenar() 
+	{
+		try
+		{
+			Collections.sort(Cartas);
+		}
+		catch(Exception e)
+		{	
+		}
+	}
+	public void OrdenarPorOrdinal()
+	{
+		Collections.sort(getCartas(),CCarta.CompararIdCarta);		
+	}
+	public void OrdenarPorPeso()
+	{
+		Collections.sort(getCartas(),CCarta.CompararPesoOrden);		
+	}
+	public void OrdenarPorPosicion()
+	{
+		Collections.sort(getCartas(),CCarta.CompararPosCarta);		
+	} 
+	public void OrdenarPorValor()
+	{
+		Collections.sort(getCartas(),CCarta.CompararValorCarta);		
+	}
 	//==================================================
 	// Metodos
 	//==================================================
 	public int NumCartas()
 	{
 		return size();
-	}
-	public boolean tieneCarta(CCarta Carta)
-	{
-		boolean rtn=false;
-		if(indexOf(Carta)>=0)
-			rtn=true;		
-		return rtn;
 	}
 	public int NumCartas(ePalo p)
 	{
@@ -62,6 +86,38 @@ public class CListaCartas implements List<CCarta>
 		}
 		return rtn;		
 	}
+	public int NumCartas(int valor)
+	{
+		int rtn=0;
+		Iterator<CCarta> it =iterator();
+		while(it.hasNext())
+		{
+			CCarta c=it.next();
+			if(c.getPosCarta()>=valor )
+				rtn++;
+		}
+		return rtn;		
+	}
+	public boolean tieneCarta(CCarta Carta)
+	{
+		boolean rtn=false;
+		if(indexOf(Carta)>=0)
+			rtn=true;		
+		return rtn;
+	}
+	public boolean tieneCarta(ePalo p, eCarta c)
+	{
+		boolean rtn=false;
+		Iterator<CCarta> it =iterator();
+		while(!rtn && it.hasNext())
+		{
+			CCarta c1=it.next();
+			if(c1.getPaloCarta()==p && c1.getECarta()==c)
+				rtn=true;
+		}
+		return rtn;	
+	}
+	
 	public CCarta DamePrimeraCarta()
 	{
 		return DamePrimeraCarta(true);
@@ -116,16 +172,7 @@ public class CListaCartas implements List<CCarta>
 		}
 		return c;
 	}
-	public void Ordenar() 
-	{
-		try
-		{
-			Collections.sort(Cartas);
-		}
-		catch(Exception e)
-		{	
-		}
-	}
+	
 	public int Contar()
 	{
 		int rtn=0;

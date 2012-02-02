@@ -3,9 +3,10 @@ package com.duxnet.games.veinteenbastos;
 import android.graphics.Canvas;
 import android.graphics.Point;
 
+import com.duxnet.games.veinteenbastos.IA.CEstado;
 import com.duxnet.games.veinteenbastos.enums.ePosicion;
 
-class CJugador
+public class CJugador extends CEstado
 {
 	private String m_Nombre;
 	private int m_NumeroJugador;
@@ -19,7 +20,8 @@ class CJugador
 	
 	public CJugador(String n,int nj,boolean r,ePosicion e)
 	{				
-		c=GlobalVar.getInstance().getDimCartas();
+		super();
+		c=getGlogal().getDimCartas();
 		setNombre(n);
 		setNumeroJugador(nj);
 		setReal(r);

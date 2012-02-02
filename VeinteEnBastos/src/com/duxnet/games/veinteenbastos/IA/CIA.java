@@ -6,103 +6,60 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
-import org.w3c.dom.CDATASection;
-
-import com.duxnet.games.veinteenbastos.CBaza;
-import com.duxnet.games.veinteenbastos.CCarta;
-import com.duxnet.games.veinteenbastos.CJugada;
-import com.duxnet.games.veinteenbastos.CListaCartas;
-import com.duxnet.games.veinteenbastos.CMano;
-import com.duxnet.games.veinteenbastos.CPalo;
-import com.duxnet.games.veinteenbastos.GlobalVar;
-import com.duxnet.games.veinteenbastos.enums.eCarta;
-import com.duxnet.games.veinteenbastos.enums.ePalo;
+import com.duxnet.games.veinteenbastos.*;
+import com.duxnet.games.veinteenbastos.enums.*;
 
 public class CIA
 {
-	private GlobalVar m_gloval;
-	private CIAEstado m_Estado;
-	public CIAEstado getEstado() 
+	private GlobalVar	m_Gloval;
+	private CEstado 	m_Estado;
+	private CMano 		m_Mano;
+	public CEstado getEstado() 
 	{
 		return m_Estado;
 	}
-	public void setEstado(CIAEstado estado) 
+	public void setEstado(CEstado estado) 
 	{
 		m_Estado = estado;
-	}
+	}	
 	private GlobalVar getGloval() 
 	{
-		return m_gloval;
+		return m_Gloval;
 	}
 	private void setGloval(GlobalVar gloval) 
 	{
-		m_gloval = gloval;
+		m_Gloval = gloval;
 	}	
 	
-	public CIA()
+	private CMano getMano() 
 	{
-		setGloval(GlobalVar.getInstance());
-		m_Estado=getGloval().CreaEstado();
+		return m_Mano;
+	}
+	private void setMano(CMano mano) 
+	{
+		m_Mano = mano;
+	}
+	public CIA(CJugador Jugador)
+	{
+		setMano(Jugador.getMano());
+		setGloval(Jugador.getGlogal());
+		setEstado(Jugador);
 	}
 	public void QuitarCarta(CCarta Carta)
 	{
-		 CPalo miPalo=null;		 			 
-		
-		 /*Quitamos la carta de la mano*/		 
-		 getEstado().Mano.remove(Carta);
-		 		 	
-		 /*Buscamos el PaloX asociado al palo de Carta*/
-		 if (Carta.getPaloCarta() == getEstado().Triunfo.getPaloCarta())
-		 {
-		   miPalo = getEstado().PaloTriunfo;
-		 }
-		 else
-		 {
-			 Iterator<CPalo> it=getEstado().Palos.iterator();
-			 while(it.hasNext())
-			 {
-				 CPalo p=it.next();
-				 if(Carta.getPaloCarta()==p.getEPalo())
-					 miPalo=p;
-			 }		
-		 }
-		 switch(Carta.getECarta())
-		 {
-		 	case AS:
-		 		miPalo.getDatos().as = 2;	
-		 	break;
-		 	case TRES:
-		 		miPalo.getDatos().tres=2;	
-		 	break;
-		 	case REY:
-		 		miPalo.getDatos().rey=2;		 	 	 	
-		 	break;
-		 	case SOTA:		 	
-		 		miPalo.getDatos().sota=2;			 	 	 
-			break;
-		 	case CABALLO:
-		 		miPalo.getDatos().caballo=2;
-		 		miPalo.getDatos().medianas++;
-		 	break;
-		 	default:
-		 		miPalo.getDatos().pequenas--;
-		 		miPalo.getDatos().medianas--;
-		 	break;	 
-		 }	
-		 Collections.sort(getEstado().Palos);		 			
+		getMano().remove(Carta); 				 		
 	}
 	public void TirarCarta(CCarta Carta)
 	{
-		getEstado().miTurno=getEstado().turno;
-		if (getEstado().turno <=2 )
+	/*	getEstado().miTurno=getEstado().getTurno();
+		if (getEstado().getTurno() <=2 )
 		{
-			getEstado().turnoComp=getEstado().miTurno+2;
+			getEstado().getTurno()Comp=getEstado().miTurno+2;
 		}					
-		else if (getEstado().turno >= 3)
+		else if (getEstado().getTurno() >= 3)
 		{			
-			getEstado().turnoComp = getEstado().miTurno-2;
-			getEstado().cartaComp=getEstado().Mesa.get(getEstado().turnoComp-1);
+			getEstado().getTurno()Comp = getEstado().miTurno-2;
+			getEstado().cartaComp=getEstado().Mesa.get(getEstado().getTurno()Comp-1);
 		}						 
 		
 		if (!getEstado().ultimas && !getEstado().vueltas)
@@ -117,93 +74,85 @@ public class CIA
 		   Vueltas(Carta);  //printf("vueltas\n");
 		 }		 
 		 //printf("carta echada: %c%c\n",Carta.getPaloCarta(),Carta->valor);
-		 QuitarCarta(Carta);
+		 QuitarCarta(Carta);*/
 	}
 	public int TriunfosEnMesa()
-	{
-		int n=0;		
-		Iterator<CCarta> it = getEstado().Mesa.iterator();
-		while(it.hasNext())
-		{
-			if(it.next().getPaloCarta()==getEstado().Triunfo.getPaloCarta())
-				n++;
-		}			  
-		return n;
+	{		
+		return getEstado().getJugadaActual().NumCartas(getEstado().getPaloTriunfo());
 	}
 	public void FinRondaIA()	
 	{
 	 /*Inicializamos algunas variables de la ronda*/
-		 getEstado().turnoComp = 0;
-		 getEstado().turno = 1;
-		 getEstado().miTurno = 0;
-		 //getEstado().Mesa.cpuntosMesa = 0;
+		 getEstado().setTurnoComp(0);
+		 getEstado().setTurnoActual(1);
+		 getEstado().setMiTurno(0);
 
 		 /*Comprobamos si es la ronda 4 de Idas o Vueltas, y en consecuencia comienza las
 		   jugadas del arrastre*/
-		 if (getEstado().num_ronda == 4 && !getEstado().ultimas)
+		 if (getEstado().getNum_ronda()== 4 && !getEstado().isUltimas())
 		 {
 		   /*Comienza el arrastre*/
-		   getEstado().nTriunfosIniciales = getEstado().PaloTriunfo.size();
-		   if (getEstado().PaloTriunfo.size() >= 3)
+		   getEstado().setnTriunfosIniciales(getMano().getPaloTriunfo().size());
+		   if (getMano().getPaloTriunfo().size() >= 3)
 		   {
-			  if(getEstado().PaloTriunfo.TieneECarta(eCarta.AS) && getEstado().PaloTriunfo.TieneECarta(eCarta.TRES) && getEstado().PaloTriunfo.TieneECarta(eCarta.REY))
+			  if(getMano().getPaloTriunfo().TieneECarta(eCarta.AS) && getMano().getPaloTriunfo().TieneECarta(eCarta.TRES) && getMano().getPaloTriunfo().TieneECarta(eCarta.REY))
 			  {
-				  getEstado().JugadaTriunfo = 1; /*Tiene los tres triunfos más altos*/
+				  getEstado().setJugadaTriunfo(1); //Tiene los mas de lo mas
 			  }
 		   }
-		   if ((getEstado().PaloTriunfo.size() >= 3) && (getEstado().JugadaTriunfo == 0))
+		   if ((getMano().getPaloTriunfo().size() >= 3) && (getEstado().getJugadaTriunfo() == 0))
 		   {
-		     if (getEstado().PaloTriunfo.TieneECarta(eCarta.AS) && getEstado().PaloTriunfo.TieneECarta(eCarta.TRES))
+		     if (getMano().getPaloTriunfo().TieneECarta(eCarta.AS) && getMano().getPaloTriunfo().TieneECarta(eCarta.TRES))
 		     {
-		    	 getEstado().JugadaTriunfo = 2; /*Tiene los dos triunfos más altos*/
+		    	 getEstado().setJugadaTriunfo(2); /*Tiene los dos triunfos más altos*/
 		     }
 		   }
 		 }	 
-		 if ((getEstado().nTriunfosIniciales == 5) && (getEstado().num_ronda == 1))
+		 if ((getEstado().getnTriunfosIniciales() == 5) && (getEstado().getNum_ronda() == 1))
 		 {
-		   if (getEstado().JugadaTriunfo == 1) 
+		   if (getEstado().getJugadaTriunfo() == 1) 
 		   {
-			   if((TriunfosEnMesa() == 2) && (getEstado().PaloTriunfo.getDatos().quedanporsalir >= 3 || getEstado().cartaComp.getPaloCarta()== getEstado().Triunfo.getPaloCarta()))
+			   if((TriunfosEnMesa() == 2) && (getMano().getPaloTriunfo().getQuedanporsalir() >= 3 || getEstado().getCartaComp().getPaloCarta()== getEstado().getPaloTriunfo()))
 			   {
-				   getEstado().JugadaTriunfo = 3;
+				   getEstado().setJugadaTriunfo(3);
 			   }
-			   if (((TriunfosEnMesa() == 2) && (getEstado().PaloTriunfo.getDatos().quedanporsalir <= 2)) || (TriunfosEnMesa() == 3) || (TriunfosEnMesa() == 4))
+			   if (((TriunfosEnMesa() == 2) && (getMano().getPaloTriunfo().getQuedanporsalir() <= 2)) || (TriunfosEnMesa() == 3) || (TriunfosEnMesa() == 4))
 			   {
-				   getEstado().JugadaTriunfo = 1;
+				   getEstado().setJugadaTriunfo(1);
 			   }
 		   }
-		   else if (getEstado().JugadaTriunfo == 2) 
+		   else if (getEstado().getJugadaTriunfo() == 2) 
 		   {
-		     if (((TriunfosEnMesa() == 2) && (getEstado().PaloTriunfo.getDatos().quedanporsalir >= 2)) || ((TriunfosEnMesa() == 2) && (getEstado().cartaComp.getPaloCarta() == getEstado().Triunfo.getPaloCarta())))
+		     if (((TriunfosEnMesa() == 2) && (getMano().getPaloTriunfo().getQuedanporsalir() >= 2)) || ((TriunfosEnMesa() == 2) && (getEstado().getCartaComp().getPaloCarta() == getEstado().getPaloTriunfo())))
 		     {
-		       getEstado().JugadaTriunfo = 3;
+		    	 getEstado().setJugadaTriunfo(3);
 		     }
-		     else if ((TriunfosEnMesa() == 3) && (getEstado().PaloTriunfo.getDatos().quedanporsalir == 2)) 
+		     else if ((TriunfosEnMesa() == 3) && (getMano().getPaloTriunfo().getQuedanporsalir() == 2)) 
 		     {
-		       getEstado().JugadaTriunfo = 4;
+		    	 getEstado().setJugadaTriunfo(4);
 		     }
 		     else 
 		     {
-		       getEstado().JugadaTriunfo = 2;
+		    	 getEstado().setJugadaTriunfo(2);
 		     }
 		   }
 		 }
-		 if (getEstado().nTriunfosIniciales == 4) 
+		 if (getEstado().getnTriunfosIniciales() == 4) 
 		 {
-		   if ((getEstado().JugadaTriunfo == 5) && (getEstado().num_ronda == 1))
+		   if ((getEstado().getJugadaTriunfo() == 5) && (getEstado().getNum_ronda() == 1))
 		   {
-			   if ((TriunfosEnMesa() == 2) && (getEstado().cartaComp.getPaloCarta() == getEstado().Triunfo.getPaloCarta()))
+			   if ((TriunfosEnMesa() == 2) && (getEstado().getCartaComp().getPaloCarta() == getEstado().getPaloTriunfo()))
 			   {
-				   getEstado().JugadaTriunfo = 3;
+				   getEstado().setJugadaTriunfo(3);
 			   }
 			   else if ((TriunfosEnMesa() == 3) || (TriunfosEnMesa() == 2))
 			   {
-				   getEstado().JugadaTriunfo = 6;
+				   getEstado().setJugadaTriunfo(6);
 			   }
 		   }
-		   if ((getEstado().JugadaTriunfo == 5) && (getEstado().num_ronda == 2) && (TriunfosEnMesa() == 2))
+		   if ((getEstado().getJugadaTriunfo() == 5) && (getEstado().getNum_ronda() == 2) && (TriunfosEnMesa() == 2))
 		   {
-			   getEstado().JugadaTriunfo = 3;
+			   getEstado().setJugadaTriunfo(3);
 		   }
 		 }
 	}	
@@ -213,9 +162,9 @@ public class CIA
 	 boolean encontrado=false;	 
 	 
 	 CPalo paloTemp=new CPalo();
-	 if(laCarta.getPaloCarta()!=getEstado().Triunfo.getPaloCarta())
+	 if(laCarta.getPaloCarta()!=getEstado().getPaloTriunfo())
 	 {
-		 Iterator<CPalo> it = getEstado().Palos.iterator();
+		 Iterator<CPalo> it = getMano().getPalos().iterator();
 		 while(!encontrado && it.hasNext())
 		 {
 			 paloTemp=it.next();			 
@@ -232,8 +181,8 @@ public class CIA
 				 ctmp=it1.next();
 				 if(ctmp.getPosCarta()>laCarta.getPosCarta() && ctmp.getPosCarta()<=limite 
 						 && ((ctmp.getECarta()!=eCarta.SOTA && ctmp.getECarta()!=eCarta.REY) 
-						 || (ctmp.getECarta()!=eCarta.SOTA && !paloTemp.getDatos().haycante) 
-						 || (ctmp.getECarta()!=eCarta.REY && !paloTemp.getDatos().haycante)))
+						 || (ctmp.getECarta()!=eCarta.SOTA && !paloTemp.isHaycante()) 
+						 || (ctmp.getECarta()!=eCarta.REY && !paloTemp.isHaycante())))
 				{
 					 encontrado=true;
 					 rtn=ctmp;
@@ -270,15 +219,15 @@ public class CIA
 	{
 	 ///Repensar como saber esto creo que lo tengo en jugada
 		boolean rtn=false;
-		if (getEstado().turno == 3)
+		if (getEstado().getTurnoActual() == 3)
 		{
-			rtn=cartaMayor(getEstado().Mesa.get(0),getEstado().Mesa.get(1),getEstado().Triunfo.getPaloCarta());
+			rtn=cartaMayor(getEstado().getJugadaActual().get(0),getEstado().getJugadaActual().get(1),getEstado().getPaloTriunfo());
 		}
 		else 
 		{ //turno == 4
 			boolean  jugadores12,jugadores23;			   	
-	        jugadores12=(cartaMayor(getEstado().Mesa.get(0),getEstado().Mesa.get(1),getEstado().Triunfo.getPaloCarta())==false);
-	        jugadores23=(cartaMayor(getEstado().Mesa.get(1),getEstado().Mesa.get(2),getEstado().Triunfo.getPaloCarta()));
+	        jugadores12=(cartaMayor(getEstado().getJugadaActual().get(0),getEstado().getJugadaActual().get(1),getEstado().getPaloTriunfo())==false);
+	        jugadores23=(cartaMayor(getEstado().getJugadaActual().get(1),getEstado().getJugadaActual().get(2),getEstado().getPaloTriunfo()));
 	        rtn=(jugadores12 && jugadores23);	           
 		}
 		return rtn;
@@ -286,11 +235,11 @@ public class CIA
 	public boolean CambioTriunfo(CCarta c)
 	{	 		
 		boolean rtn=false;
-		if ((getEstado().num_ronda == 4 || getEstado().vueltas) && (getEstado().Mano.tieneCarta(c) && (getEstado().Triunfo.getIdCarta() >= c.getIdCarta())))
+		if ((getEstado().getNum_ronda() == 4 || getEstado().isVueltas()) && (getMano().tieneCarta(c) && (getEstado().getTriunfo().getIdCarta() >= c.getIdCarta())))
 		{
 
 			QuitarCarta(c);
-			RobaCartaIA(getEstado().Triunfo);
+			RobaCartaIA(getEstado().getTriunfo());
 			rtn=true;
 		}
 		return rtn;
@@ -299,25 +248,25 @@ public class CIA
 	{
 		String rtn=acciones;
 		byte[] aux=rtn.getBytes();
-		Iterator<CPalo> it =getEstado().Palos.iterator();
+		Iterator<CPalo> it =getMano().getPalos().iterator();
 		while(it.hasNext())
 		{
 			CPalo palo=it.next();
 			if(aux[palo.getPaloBaraja()]==1)
-				palo.getDatos().haycante=false;					
+				palo.setHaycante(false);					
 		}
 	}
 	public void CambiarSiete(CCarta c)
 	{	 
 	 QuitarCarta(c);
-	 RobaCartaIA(getEstado().Triunfo);
+	 RobaCartaIA(getEstado().getTriunfo());
 	}
 	public String PuedoCantar(String acciones)
 	{
 		String rtn=acciones;
 		byte[] aux=rtn.getBytes();
 		int i=0;
-		Iterator<CPalo> it =getEstado().Palos.iterator();
+		Iterator<CPalo> it =getMano().getPalos().iterator();
 		while(it.hasNext())
 		{
 			CPalo palo=it.next();
@@ -337,8 +286,8 @@ public class CIA
 		 CPalo miPalo;	 
 		 boolean colocado;
 		 int n; //contadores
-		 int idx=getEstado().Palos.indexOf(Carta.getPaloCarta());
-		 misDatos=getEstado().Palos.get(idx).getDatos();
+		 int idx=getMano().getPalos().indexOf(Carta.getPaloCarta());
+		 misDatos=getMano().getPalos().get(idx).getDatos();
 		 //Miramos su valor y modificamos los datos necesarios
 		 misDatos.quedanporsalir--;
 		 
@@ -376,12 +325,12 @@ public class CIA
 			 getEstado().Mano.AddNumcar();
 			 if (Carta.getECarta()== getEstado().Triunfo.getECarta())
 			 {
-			     miPalo = getEstado().PaloTriunfo;
+			     miPalo = getMano().getPaloTriunfo();
 			 }
 			 else 
 			 {
-			     miPalo = getEstado().Palos.get(0);
-			     getEstado().Palos.get(1).setDatos(misDatos);
+			     miPalo = getMano().getPalos().get(0);
+			     getMano().getPalos().get(1).setDatos(misDatos);
 			 }		 
 			 miPalo.add(Carta);
 		 }
@@ -419,21 +368,21 @@ public class CIA
 				 getEstado().Mano.AddNumcar();
 			 }
 			 
-			 if (Carta.getPaloCarta()== getEstado().Triunfo.getPaloCarta())
+			 if (Carta.getPaloCarta()== getEstado().getPaloTriunfo())
 			 {
-			     miPalo = getEstado().PaloTriunfo;
+			     miPalo = getMano().getPaloTriunfo();
 			 }
-			 else if((Carta.getPaloCarta() == getEstado().Palos.get(0).getEPalo()) || (getEstado().Palos.get(0).size() == 0))
+			 else if((Carta.getPaloCarta() == getMano().getPalos().get(0).getEPalo()) || (getMano().getPalos().get(0).size() == 0))
 			 {
-			     miPalo = getEstado().Palos.get(0);
+			     miPalo = getMano().getPalos().get(0);
 			 }
-			 else if((Carta.getPaloCarta() == getEstado().Palos.get(1).getEPalo()) || (getEstado().Palos.get(1).size() == 0))
+			 else if((Carta.getPaloCarta() == getMano().getPalos().get(1).getEPalo()) || (getMano().getPalos().get(1).size() == 0))
 			 {
-			     miPalo = getEstado().Palos.get(1);
+			     miPalo = getMano().getPalos().get(1);
 			 }
 			 else
 			 {
-				    miPalo = getEstado().Palos.get(2);
+				    miPalo = getMano().getPalos().get(2);
 			 }
 			 if (miPalo.size()== 0)
 			 {
@@ -454,14 +403,14 @@ public class CIA
 			       	miPalo.add(n,Carta);
 			 }		 	   
 		 }		 
-		 Collections.sort(getEstado().Palos);		 	
+		 Collections.sort(getMano().getPalos());		 	
 	}
 	public void ActualizarJugada(CCarta Carta)
 	{
 		CIADatos misDatos;
 		
-		int idx=getEstado().Palos.indexOf(Carta.getPaloCarta());
-		misDatos=getEstado().Palos.get(idx).getDatos();
+		int idx=getMano().getPalos().indexOf(Carta.getPaloCarta());
+		misDatos=getMano().getPalos().get(idx).getDatos();
 		misDatos.quedanporsalir--;
 		switch(Carta.getECarta())
 		 {
@@ -481,12 +430,12 @@ public class CIA
 		 		misDatos.caballo=2;		 	 
 		 	break;		 	
 		 }	 
-		getEstado().Mesa.add(getEstado().turno-1, Carta);
-		if (getEstado().turnoComp == getEstado().turno) 
+		getEstado().Mesa.add(getEstado().getTurnoActual()-1, Carta);
+		if (getEstado().getTurnoActual()Comp == getEstado().getTurnoActual()) 
 		{
 		   getEstado().cartaComp = Carta;
 		}		
-		getEstado().turno++;		
+		getEstado().getTurnoActual()++;		
 	}
 	public CCarta DescarteBasico()
 	{
@@ -494,7 +443,7 @@ public class CIA
 		CCarta rtn=null;
 	
 		/*Buscamos echar una carta hasta caballo*/
-		Iterator<CPalo> it = getEstado().Palos.iterator();
+		Iterator<CPalo> it = getMano().getPalos().iterator();
 		while(it.hasNext() && !descartado)
 		{
 			CPalo p=it.next();
@@ -511,24 +460,24 @@ public class CIA
 					rtn=p.DamePrimeraCarta(false);
 					descartado=true;				
 				}
-				else if(getEstado().PaloTriunfo.size()>0)
+				else if(getMano().getPaloTriunfo().size()>0)
 				{
 					//Buscamos echar triunfo bajo
-					if(getEstado().PaloTriunfo.getDatos().medianas>0)
+					if(getMano().getPaloTriunfo().getDatos().medianas>0)
 					{
-						if(getEstado().PaloTriunfo.DamePrimeraCarta(false).getPosCarta()!=4)
+						if(getMano().getPaloTriunfo().DamePrimeraCarta(false).getPosCarta()!=4)
 						{
-							rtn=getEstado().PaloTriunfo.DamePrimeraCarta(false);
+							rtn=getMano().getPaloTriunfo().DamePrimeraCarta(false);
 							descartado=true;
 						}
-						else if (getEstado().PaloTriunfo.DamePrimeraCarta(false).getPosCarta() <= '5') 
+						else if (getMano().getPaloTriunfo().DamePrimeraCarta(false).getPosCarta() <= '5') 
 						{
-							rtn=getEstado().PaloTriunfo.DamePrimeraCarta(false);
+							rtn=getMano().getPaloTriunfo().DamePrimeraCarta(false);
 							descartado=true;
 						}
-						else if (getEstado().PaloTriunfo.getDatos().caballo == '1') 
+						else if (getMano().getPaloTriunfo().getDatos().caballo == '1') 
 						{
-							rtn=getEstado().PaloTriunfo.DamePrimeraCarta(false);
+							rtn=getMano().getPaloTriunfo().DamePrimeraCarta(false);
 							descartado=true;
 						}												
 					}					
@@ -569,22 +518,22 @@ public class CIA
 			int icd,icd2;
 	
 			cartadescarte=DescarteBasico();
-			Iterator<CPalo> it = getEstado().Palos.iterator();
+			Iterator<CPalo> it = getMano().getPalos().iterator();
 			while(it.hasNext())
 			{
 				CPalo p=it.next();
 				if(p.getEPalo()== getEstado().cartaComp.getPaloCarta())
 				{
 					//Eliminamos el palo del compañero y volvemos a eleguir la mejor carta
-					getEstado().Palos.remove(p);
+					getMano().getPalos().remove(p);
 					cartadescarte2=DescarteBasico();
 					if(cartadescarte2==null)
 						cartadescarte2=cartadescarte;
-					getEstado().Palos.add(p);				
+					getMano().getPalos().add(p);				
 				}			
 			}
-			icd=getEstado().Palos.indexOf(cartadescarte);
-			icd2=getEstado().Palos.indexOf(cartadescarte2);
+			icd=getMano().getPalos().indexOf(cartadescarte);
+			icd2=getMano().getPalos().indexOf(cartadescarte2);
 			if((cartadescarte.getPosCarta()<=7 && cartadescarte.getPaloCarta()!=getEstado().cartaComp.getPaloCarta()) || (cartadescarte2==cartadescarte))
 			{
 				rtn=cartadescarte;
@@ -592,8 +541,8 @@ public class CIA
 			else
 			{
 				if((cartadescarte.getPosCarta()<=7 && cartadescarte2.getPosCarta()>7 && cartadescarte.getPaloCarta()!=getEstado().cartaComp.getPaloCarta())  
-						|| (cartadescarte2.getPaloCarta()==getEstado().Triunfo.getPaloCarta()) 
-						|| ((getEstado().Palos.get(icd).NumCartas()+2)<= getEstado().Palos.get(icd2).NumCartas()))
+						|| (cartadescarte2.getPaloCarta()==getEstado().getPaloTriunfo()) 
+						|| ((getMano().getPalos().get(icd).NumCartas()+2)<= getMano().getPalos().get(icd2).NumCartas()))
 				{
 					rtn=cartadescarte;
 				}
@@ -608,10 +557,10 @@ public class CIA
 	public CCarta DescarteSolitario()
 	{
 		CCarta rtn;
-		if(getEstado().Palos.get(0).size()==1)
+		if(getMano().getPalos().get(0).size()==1)
 		{
-			if(getEstado().Palos.get(0).getDatos().as!=1 && getEstado().Palos.get(0).getDatos().tres!=1)
-				rtn=getEstado().Palos.get(0).DamePrimeraCarta(false);			
+			if(getMano().getPalos().get(0).getDatos().as!=1 && getMano().getPalos().get(0).getDatos().tres!=1)
+				rtn=getMano().getPalos().get(0).DamePrimeraCarta(false);			
 			else
 				rtn=DescarteBasico();
 		}
@@ -622,11 +571,11 @@ public class CIA
 	public CCarta Descarte()
 	{
 		CCarta rtn;
-		if ((getEstado().num_ronda!= 4) && (getEstado().turno > 2) && getEstado().dificil)
+		if ((getEstado().getNum_ronda()!= 4) && (getEstado().getTurnoActual() > 2) && getEstado().dificil)
 		{
 			   rtn=DescartarCartaSegundo();
 		}
-		else if (getEstado().num_ronda == 4 && !getEstado().ultimas && getEstado().dificil)
+		else if (getEstado().getNum_ronda() == 4 && !getEstado().ultimas && getEstado().dificil)
 		{
 			rtn=DescarteSolitario();
 		}

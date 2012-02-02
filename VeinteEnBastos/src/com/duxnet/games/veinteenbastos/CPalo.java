@@ -11,12 +11,10 @@ import com.duxnet.games.veinteenbastos.enums.ePalo;
 public class CPalo extends CListaCartas implements Comparable<Object>
 {   
 	private int PaloBaraja; 
-	private Bitmap bmpPalo;
-	private CIADatos m_Datos;
+	private Bitmap bmpPalo;	
 	public CPalo(int Palo,Bitmap palo)
 	{	
-		setPaloBaraja(Palo);
-		setDatos(new CIADatos());
+		setPaloBaraja(Palo);		
 		bmpPalo=palo;	
 	}
 	public CPalo()
@@ -46,12 +44,6 @@ public class CPalo extends CListaCartas implements Comparable<Object>
 	public ePalo getEPalo() 
 	{
 		return ePalo.getPalo(PaloBaraja);
-	}
-	public CIADatos getDatos() {
-		return m_Datos;
-	}
-	public void setDatos(CIADatos datos) {
-		m_Datos = datos;
 	}	
 	public int compareTo(Object another) 
 	{

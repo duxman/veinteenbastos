@@ -1,6 +1,6 @@
 package com.duxnet.games.veinteenbastos;
+import java.util.Comparator;
 import java.util.Random;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -51,15 +51,9 @@ public class CCarta implements Comparable<Object>
 		setAlto(bmpcarta.getHeight());
 		setAncho(bmpcarta.getWidth());
 	}	
-	
 	//==================================================================
-    // Metodos
+    // Metodos Comparadores
     //==================================================================	
-	public boolean Tocada(float x2, float y2) 
-    {
-        return x2 > getX() && x2 < getX() + getAncho() && y2 > getY() && y2 < getY() + getAlto();
-    }
-	
 	public int compareTo(Object another) 
 	{
 		if (this.getPosCarta()== ((CCarta) another).getPosCarta())
@@ -69,6 +63,7 @@ public class CCarta implements Comparable<Object>
         else
             return -1;
 	}
+	
 	public int MayorValor(Object another) 
 	{
 		if (this.getValorCarta()== ((CCarta) another).getValorCarta())
@@ -78,6 +73,7 @@ public class CCarta implements Comparable<Object>
         else
             return -1;
 	}
+	
 	public int MayorId(Object another)
 	{
 		if (this.getIdCarta()== ((CCarta) another).getIdCarta())
@@ -86,8 +82,81 @@ public class CCarta implements Comparable<Object>
             return 1;
         else
             return -1;
-	}
+	}	
+	public static final Comparator<CCarta> CompararPesoOrden= new Comparator<CCarta>() 
+	{
+		public int compare(CCarta o1, CCarta o2) 
+		{
+			//comprueba si los objectos que le llegan son del tipo de la clase
+			if (o1.getPesoOrden() == o2.getPesoOrden() || !(o1 instanceof CCarta) || !(o2 instanceof CCarta )) 
+			{
+				return 0;
+			}
+			else
+			{							
+				// realiza las operaciones de comparación entre las fechas de las clases o1 y o2
+				return o1.getPesoOrden()<= o2.getPesoOrden() ? ((int) (o1.getPesoOrden() >= o2.getPesoOrden() ? 0: 1)): -1;
+			}
+		}
+	};	
+	public static final Comparator<CCarta> CompararPosCarta= new Comparator<CCarta>() 
+	{
+		public int compare(CCarta o1, CCarta o2) 
+		{
+			//comprueba si los objectos que le llegan son del tipo de la clase			
+			if (o1.getPosCarta() == o2.getPosCarta() || !(o1 instanceof CCarta) || !(o2 instanceof CCarta )) 
+			{
+				return 0;
+			}
+			else
+			{							
+				// realiza las operaciones de comparación entre las fechas de las clases o1 y o2
+				return o1.getPosCarta()<= o2.getPosCarta() ? ((int) (o1.getPosCarta() >= o2.getPosCarta() ? 0: 1)): -1;
+			}
+		}
+	};	
+	public static final Comparator<CCarta> CompararValorCarta= new Comparator<CCarta>() 
+	{
+		public int compare(CCarta o1, CCarta o2) 
+		{
+			//comprueba si los objectos que le llegan son del tipo de la clase			
+			if (o1.getValorCarta() == o2.getValorCarta() || !(o1 instanceof CCarta) || !(o2 instanceof CCarta )) 
+			{
+				return 0;
+			}
+			else
+			{							
+				// realiza las operaciones de comparación entre las fechas de las clases o1 y o2
+				return o1.getValorCarta()<= o2.getValorCarta() ? ((int) (o1.getValorCarta() >= o2.getValorCarta() ? 0: 1)): -1;
+			}
+		}
+	};	
+	public static final Comparator<CCarta> CompararIdCarta= new Comparator<CCarta>() 
+	{
+		public int compare(CCarta o1, CCarta o2) 
+		{
+			//comprueba si los objectos que le llegan son del tipo de la clase			
+			if (o1.getOrdinalCarta() == o2.getOrdinalCarta() || !(o1 instanceof CCarta) || !(o2 instanceof CCarta )) 
+			{
+				return 0;
+			}
+			else
+			{							
+				// realiza las operaciones de comparación entre las fechas de las clases o1 y o2
+				return o1.getOrdinalCarta()<= o2.getOrdinalCarta() ? ((int) (o1.getOrdinalCarta() >= o2.getOrdinalCarta() ? 0: 1)): -1;
+			}
+		}
+	};
 	
+
+	
+	//==================================================================
+    // Metodos
+    //==================================================================	
+	public boolean Tocada(float x2, float y2) 
+    {
+        return x2 > getX() && x2 < getX() + getAncho() && y2 > getY() && y2 < getY() + getAlto();
+    }		
 	public void PintarBorde(Canvas canvas)
 	{
 		Paint p=new Paint();
