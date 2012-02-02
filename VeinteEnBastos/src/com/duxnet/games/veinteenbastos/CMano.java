@@ -20,12 +20,25 @@ public class CMano  extends CListaCartas
 	public CMano()
 	{
 		super();
-		m_Palos=new ArrayList<CPalo>(3);
-		m_PaloTriunfo=new CPalo();
-		inicializaPalo(m_Palos.get(0));
-		inicializaPalo(m_Palos.get(1));
-		inicializaPalo(m_Palos.get(2));
-		inicializaPalo(m_PaloTriunfo);
+		m_Palos=new ArrayList<CPalo>();
+		m_Palos.add(new CPalo());
+		m_Palos.add(new CPalo());
+		m_Palos.add(new CPalo());
+		m_PaloTriunfo=new CPalo();		
+	}
+	public CPalo DamePalo(ePalo palo)
+	{
+		CPalo rtn=null;				
+		Iterator<CPalo> itpalo = m_Palos.iterator();
+		while(rtn==null  && itpalo.hasNext())
+		{
+			CPalo p=itpalo.next();
+			if(p.getEPalo()==palo)
+			{	
+				rtn=p;
+			}					
+		}
+		return rtn;
 	}
 	public void RellenaPalosMano(ePalo triunfo)
 	{			
@@ -36,7 +49,7 @@ public class CMano  extends CListaCartas
 			if(c.getPaloCarta()==triunfo)
 			{
 				m_PaloTriunfo.setPaloBaraja(c.getPaloCarta().getId());
-				rellenaDatos(m_PaloTriunfo,c,1);				
+				m_PaloTriunfo.rellenaDatos(c,1);				
 				m_PaloTriunfo.add(c);
 				Collections.sort(m_PaloTriunfo,CCarta.CompararPosCarta);
 			}
@@ -49,7 +62,7 @@ public class CMano  extends CListaCartas
 					if(p.getEPalo()==c.getPaloCarta())
 					{
 						p.setPaloBaraja(c.getPaloCarta().getId());
-						rellenaDatos(p,c,1);				
+						p.rellenaDatos(c,1);				
 						p.add(c);
 						Collections.sort(p,CCarta.CompararPosCarta);
 					}					
@@ -57,61 +70,7 @@ public class CMano  extends CListaCartas
 			}			
 		}
 		Collections.sort(getPalos());
-	}
-	private void inicializaPalo(CPalo p)
-	{
-		 p.setAs(0);
-		 p.setTres(0);
-		 p.setSota(0);
-		 p.setCaballo(0);
-		 p.setRey(0);
-		 p.setMedianas(0);
-		 p.setPequenas(0);
-		 p.setHaycante(false);
-		 p.setQuedanporsalir(10);
-	}
-	public void rellenaDatos(CPalo palo,CCarta carta,int valor)
-	{
-		 palo.setQuedanporsalir(palo.getQuedanporsalir()-1);
-		 switch(carta.getECarta())
-		 {
-		 	case AS:
-		 		palo.setAs(valor);	
-		 	break;
-		 	case TRES:
-		 		palo.setTres(valor);
-		 	break;
-		 	case REY:
-		 		palo.setRey(valor);
-		 		if(palo.getSota()==1)
-		 			palo.setHaycante(true);		 	 
-		 	break;
-		 	case SOTA:
-		 		palo.setSota(valor);
-			 	 if(palo.getRey()==1)
-			 		palo.setHaycante(true);				 			 
-			break;
-		 	case CABALLO:
-		 		palo.setCaballo(valor);
-		 		if(valor==1)
-		 			palo.setMedianas(palo.getMedianas()+1);
-		 		else if(valor==2)
-		 			palo.setMedianas(palo.getMedianas()-1);
-		 	break;
-		 	default:
-		 		if(valor==1)
-		 		{
-		 			palo.setPequenas(palo.getPequenas()+1);
-		 			palo.setMedianas(palo.getMedianas()+1);
-		 		}
-		 		else if(valor==2)
-		 		{
-		 			palo.setPequenas(palo.getPequenas()-1);
-		 			palo.setMedianas(palo.getMedianas()-1);
-		 		}		 				 		
-		 	break;	 
-		 }	 	
-	}
+	}		
 	//==================================================================
     // Metodos Ordenadores
     //==================================================================
@@ -161,7 +120,7 @@ public class CMano  extends CListaCartas
 		if(object.getPaloCarta()==m_PaloTriunfo.getEPalo())
 		{
 			m_PaloTriunfo.setPaloBaraja(object.getPaloCarta().getId());
-			rellenaDatos(m_PaloTriunfo,object,1);				
+			m_PaloTriunfo.rellenaDatos(object,1);				
 			m_PaloTriunfo.add(object);
 			Collections.sort(m_PaloTriunfo,CCarta.CompararPosCarta);
 		}
@@ -173,7 +132,7 @@ public class CMano  extends CListaCartas
 				if(p.getEPalo()==object.getPaloCarta())
 				{
 					p.setPaloBaraja(object.getPaloCarta().getId());
-					rellenaDatos(p,object,1);				
+					p.rellenaDatos(object,1);				
 					p.add(object);
 					encontrado=true;
 					Collections.sort(p,CCarta.CompararPosCarta);
@@ -182,13 +141,15 @@ public class CMano  extends CListaCartas
 			
 		}
 		Collections.sort(getPalos());
+		setNumcar(getNumcartas());
 		return rtn;
+		
 	}	
 	@Override
 	public CCarta remove(int location) 
 	{	
 		CCarta rtn=getCartas().get(location);
-		this.remove(rtn);		
+		this.remove(rtn);				
 		return  rtn; 		
 	}
 	@Override
@@ -201,7 +162,7 @@ public class CMano  extends CListaCartas
 		Iterator<CPalo> itpalo = m_Palos.iterator();
 		if(object.getPaloCarta()==m_PaloTriunfo.getEPalo())
 		{
-			rellenaDatos(m_PaloTriunfo,object,2);				
+			m_PaloTriunfo.rellenaDatos(object,2);				
 			rtn=(m_PaloTriunfo.remove(object) && getCartas().remove(object));
 			Collections.sort(m_PaloTriunfo,CCarta.CompararPosCarta);
 		}
@@ -212,13 +173,14 @@ public class CMano  extends CListaCartas
 				CPalo p=itpalo.next();
 				if(p.getEPalo()==object.getPaloCarta())
 				{					
-					rellenaDatos(p,object,2);				
+					p.rellenaDatos(object,2);				
 					rtn=(p.remove(object) && getCartas().remove(object));
 					encontrado=true;
 					Collections.sort(p,CCarta.CompararPosCarta);
 				}					
 			}			
 		}
+		setNumcar(getNumcartas());
 		Collections.sort(getPalos());
 		return rtn;		
 	}	

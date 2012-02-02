@@ -16,7 +16,7 @@ public class VeinteEnBastos extends Activity {
         //setContentView(R.layout.main);        
         //myguiniote = (CVeinteEnBastosView) findViewById(R.id.SurfaceView);
         int setOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        setRequestedOrientation(setOrientation);        
+        setRequestedOrientation(setOrientation);         
         setContentView(new CVeinteEnBastosView(this,getWindowManager().getDefaultDisplay().getHeight(),getWindowManager().getDefaultDisplay().getWidth()));
         setRequestedOrientation(setOrientation);
         //setContentView(new CVeinteEnBastosView(this));
