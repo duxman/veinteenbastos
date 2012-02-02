@@ -117,6 +117,18 @@ public class CListaCartas extends CDatos implements List<CCarta>
 		}
 		return rtn;	
 	}
+	public int idxCarta(eCarta c)
+	{
+		int  rtn=-1;
+		Iterator<CCarta> it =iterator();
+		while(rtn==-1 && it.hasNext())
+		{
+			CCarta c1=it.next();
+			if(c1.getECarta()==c)
+				rtn=indexOf(c1);			
+		}
+		return rtn;	
+	}
 	
 	public CCarta DamePrimeraCarta()
 	{
