@@ -151,7 +151,7 @@ public class CIA
 		   }
 		 }
 	}	
-	public CCarta puedoMontar(CCarta laCarta, char limite)
+	public CCarta puedoMontar(CCarta laCarta, int limite)
 	{
 	 CCarta rtn=null;
 	 boolean encontrado=false;	 
@@ -456,7 +456,7 @@ public class CIA
 	public CCarta VoyDeIdas()
 	{
 	 boolean yaesta;
-	 CCarta rtn,CartaAux;
+	 CCarta rtn = null,CartaAux=null;
 	
 	 yaesta = false;
 	 if (getEstado().getTurnoActual() == 1)
@@ -571,164 +571,201 @@ public class CIA
 	   if (!yaesta) 
 	   {
 	     rtn=Descarte();
+	     yaesta=true;
+	     
 	   }	   
 	 }
-	
-
-	 if (getEstado().turno == 3){
-	   /*Casos particulares de ronda 4*/
-	   if ((*getEstado().num_ronda == 4) && (getEstado().dificil == 1)){
-	     if ((getEstado().Triunfo->valor >= '6') && (getEstado().Mesa.jugador2.valor >= '8') && (getEstado().Mesa.jugador2.palo != getEstado().Triunfo->palo)){
-	       /*Es posible que el segundo jugador haya echado la bresca para poder quedarse con el triunfo
-	        la IA evita matar a no ser que tenga el siete. Si el triunfo es una sota o
-	        un rey, la IA puede suponer que el segundo jugador tiene la pareja y quiere
-	        intentar que la IA mate, cosa que no suceder�*/
-	        CartaAux.palo = getEstado().Triunfo->palo; CartaAux.valor = '4';
-	        if ((tieneCarta(EstadoIA,CartaAux)) || /*tiene el siete de triunfo, hay que matar*/
-	            ((getEstado().PaloT.Datos->sota == '1') && (getEstado().Triunfo->valor == '7')) ||
-	            ((getEstado().PaloT.Datos->rey == '1') && (getEstado().Triunfo->valor == '6')) ||
-	            /*la carta del corro es una sota o un rey, pero la IA tiene la pareja as� que
-	             sabe que el oponente no podra cantar las 40 y mata la bresca*/
-	            (getEstado().Triunfo->valor <= '5')){/*el corro tiene un valor relativo bajo, se mata la bresca*/
-	          /*Intentamos matar con un triunfo peque�o*/
-	          if ((getEstado().PaloT.Datos->medianas >= 1) && (getEstado().PaloT.N > 1)){
-	            if (getEstado().PaloT.Palo[0].valor != '4'){
-	              *Carta = getEstado().PaloT.Palo[0];
-	            }
-	            else if ((getEstado().PaloT.Palo[1].valor == '5') && (getEstado().PaloT.N > 2)){
-	              *Carta = getEstado().PaloT.Palo[1];
-	            }
-		    else{
-		      Descarte(EstadoIA,Carta);
-		    }  
-	          }
-	          else { /*si no podemos, nos descartamos*/
-	            Descarte(EstadoIA,Carta);
-	          }
-	          yaesta = 1;
-	        }
-	     }
-	   } /*fin casos particulares ronda 4*/
-	   /*Comprobamos si el jugador2 ha conseguido montar*/
-	   /*Si no ha montado, o si la carta que ha echado es triunfo, se descarta*/
-	   if ((yaesta == 0) && (vaNuestra(EstadoIA) || (getEstado().Mesa.jugador2.palo == getEstado().Triunfo->palo))){
-	     Descarte(EstadoIA,Carta); yaesta = 1;
-	   }
-	   /*Intentamos montar*/
-	   if (yaesta == 0){
-	     yaesta = puedoMontar(EstadoIA,Carta,&getEstado().Mesa.jugador2,'7');
-	   }
-	   /*Intentamos matar con triunfo peque�o*/
-	   if ((yaesta == 0) && (getEstado().PaloT.N > 1) && (getEstado().PaloT.Datos->medianas >= 1) && (getEstado().puntosMesa >= 10)){
-	     if (getEstado().PaloT.Palo[0].valor != '4'){
-	        *Carta = getEstado().PaloT.Palo[0]; yaesta = 1;
-	     }
-	     else if ((getEstado().PaloT.Palo[1].valor == '5') && (getEstado().PaloT.N > 2)){
-	       *Carta = getEstado().PaloT.Palo[1]; yaesta = 1;
-	     }
-	   }
-	   if (yaesta == 0) { /*se descarta*/
-	     Descarte(EstadoIA,Carta); yaesta = 1;
-	   }
-	 }/*fin turno 3*/
-
-	 if (getEstado().turno == 4){
-	   /*Condiciones especiales de ronda 4*/
-	   /*Si el corro es alto y no va de la IA y no hay muchos puntos en mesa lo deja pasar*/
-	   if ((getEstado().dificil == 1) && (vaNuestra(EstadoIA) == 0) && (getEstado().Triunfo->valor >= '6')
-	        && (getEstado().puntosMesa < 15) && (*getEstado().num_ronda == 4)){
-	     Descarte(EstadoIA,Carta); yaesta = 1;
-	   } /*fin de condiciones del turno 4*/
-	   /*Miramos a ver si va del compa�ero*/
-	   if ((yaesta == 0) && vaNuestra(EstadoIA)){ /*Va del compa�ero, intentamos echar bresca, si no descarte*/
-	     if (getEstado().Palo1.N > 0){
-	       if (getEstado().Palo1.Palo[getEstado().Palo1.N-1].valor >= '8') {
-	         *Carta = getEstado().Palo1.Palo[getEstado().Palo1.N-1]; yaesta = 1;
-	       }
-	     }
-	     if (getEstado().Palo2.N > 0){
-	       if ((yaesta == 0) && (getEstado().Palo2.Palo[getEstado().Palo2.N-1].valor >= '8')) {
-	         *Carta = getEstado().Palo2.Palo[getEstado().Palo2.N-1]; yaesta = 1;
-	       }
-	     }
-	     if (getEstado().Palo3.N > 0){
-	       if ((yaesta == 0) && (getEstado().Palo3.Palo[getEstado().Palo3.N-1].valor >= '8')) {
-	         *Carta = getEstado().Palo3.Palo[getEstado().Palo3.N-1]; yaesta = 1;
-	       }
-	     }
-	     if (yaesta == 0) {
-	       Descarte(EstadoIA,Carta); yaesta = 1;
-	     }
-	   }
-	   else if (yaesta == 0){ /*Va del otro equipo, intentamos montar o descartarnos seg�n las cartas de la mesa*/
-	     /*Si carta1 es triunfo y carta3 no es bresca, se descarta*/
-	     if ((getEstado().Mesa.jugador1.palo == getEstado().Triunfo->palo) &&
-	         (getEstado().Mesa.jugador3.palo != getEstado().Triunfo->palo) &&
-	         (getEstado().Mesa.jugador3.valor < '8') && (yaesta == 0)){
-	       Descarte(EstadoIA,Carta); yaesta = 1;
-	     }
-	     /*Si carta1 es triunfo y carta3 es bresca, intentamos montar*/
-	     if ((getEstado().Mesa.jugador1.palo == getEstado().Triunfo->palo) &&
-	         (getEstado().Mesa.jugador3.palo != getEstado().Triunfo->palo) &&
-	         (getEstado().Mesa.jugador3.valor >= '8') && (yaesta == 0)){
-	       if ((yaesta = puedoMontar(EstadoIA,Carta,&getEstado().Mesa.jugador1,'5')) == 0){
-	         Descarte(EstadoIA,Carta); yaesta = 1;
-	       }
-	     }
-	     /*carta1 no es triunfo, miramos a ver si carta3 es triunfo y hay puntos en la mesa*/
-	     if ((getEstado().dificil == 1) && (yaesta == 0) && ((getEstado().Mesa.jugador3.palo == getEstado().Triunfo->palo))
-	         && (getEstado().puntosMesa >= 11)){/*Buscamos matar la carta3*/
-	       if ((yaesta = puedoMontar(EstadoIA,Carta,&getEstado().Mesa.jugador3,'5')) == 0){
-	         Descarte(EstadoIA,Carta); yaesta = 1;
-	       }
-	     }
-	     /*carta1 no es triunfo, si carta3 es triunfo y no hay puntos en la mesa, descarte*/
-	     if ((yaesta == 0) && (getEstado().Mesa.jugador3.palo == getEstado().Triunfo->palo)){
-	       Descarte(EstadoIA,Carta); yaesta = 1;
-	     }
-	     /*Ni carta1 ni carta3 son triunfos, y por ende, carta2 tampoco*/
-	     /*Miramos a ver si podemos matar con as*/
-	     CartaAux.palo = getEstado().Mesa.jugador1.palo; CartaAux.valor = '9';
-	     if ((yaesta == 0) && tieneCarta(EstadoIA,CartaAux)){
-	       *Carta = CartaAux; yaesta = 1;
-	     }
-	     /*Miramos a ver si podemos matar con tres*/
-	     CartaAux.valor = '8';
-	     if ((yaesta == 0) && tieneCarta(EstadoIA,CartaAux)
-	         && (getEstado().Mesa.jugador1.valor != '9') && ((getEstado().Mesa.jugador3.palo != CartaAux.palo)
-	         || ((getEstado().Mesa.jugador3.palo == CartaAux.palo) && (getEstado().Mesa.jugador3.valor != '9')))){
-	       *Carta = CartaAux; yaesta = 1;
-	     }
-	     /*Guardamos en CartaAux la carta m�s alta entre carta1 y carta3*/
-	     CartaAux = cartaMayor(&getEstado().Mesa.jugador1,&getEstado().Mesa.jugador3,getEstado().Triunfo->palo) ? getEstado().Mesa.jugador1 : getEstado().Mesa.jugador3;
-	     /*Si hay 8 o mas puntos en la mesa, buscamos matar con algo que no sea triunfo*/
-	     if ((yaesta == 0) && (getEstado().puntosMesa >= 8)){
-	       yaesta = puedoMontar(EstadoIA,Carta,&CartaAux,'5');
-	     }
-	     /*Si hay 10 o m�s puntos en mesa, buscamos matar con triunfo peque�o si es IA dificil*/
-	     if ((getEstado().dificil == 1) && (yaesta == 0) && (getEstado().puntosMesa >= 10) && (getEstado().PaloT.N > 1) && (getEstado().PaloT.Datos->medianas >= 1)){
-	       if ((getEstado().PaloT.Palo[0].valor != '4') || (getEstado().Triunfo->valor < '6')){
-	         *Carta = getEstado().PaloT.Palo[0]; yaesta = 1;
-	       }
-	     }
-	     /*Si hay 6 o m�s puntos en mesa, buscamos matar con triunfo peque�o si es IA facil*/
-	     if ((getEstado().dificil == 0) && (yaesta == 0) && (getEstado().puntosMesa >= 6) && (getEstado().PaloT.N > 1) && (getEstado().PaloT.Datos->medianas >= 1)){
-	       if ((getEstado().PaloT.Palo[0].valor != '4') || (getEstado().Triunfo->valor < '6')){
-	         *Carta = getEstado().PaloT.Palo[0]; yaesta = 1;
-	       }
-	     }
-	     /*Llegados aqu�, nos descartamos*/
-	     if (yaesta == 0){
-	       Descarte(EstadoIA,Carta); yaesta = 1;
-	     }
-	   }
-	 }/*fin turno 4*/
-
-	 if (yaesta == 0){/*no deber�amos llegar aqu� nunca*/
-	   *Carta = getEstado().Mano.carta[0];
+	 else if (getEstado().getTurnoActual() == 3)
+	 {
+	   //Si  es la ultima ronda me descarto de Bresca
+	   if ( getEstado().getNum_ronda() == 4 && getEstado().getNivel() == 3)
+		   if (
+				   (getEstado().getTriunfo().getPosCarta()>= 6 && getGloval().getJugada().get(1).getPosCarta()>=eCarta.TRES.getPos() && getGloval().getJugada().get(1).getPaloCarta()!=getEstado().getPaloTriunfo()) 				  
+			  )
+	   {		   
+		   if( getMano().tieneCarta(getEstado().getPaloTriunfo(),eCarta.SIETE)
+				   || (getMano().getPaloTriunfo().getSota()==1 && getEstado().getTriunfo().getECarta()==eCarta.REY)
+				   || (getMano().getPaloTriunfo().getRey()==1 && getEstado().getTriunfo().getECarta()==eCarta.SOTA)
+				   || (getEstado().getTriunfo().getPosCarta()<=eCarta.CABALLO.getPos())
+			  )
+		   {
+			   if(getMano().getPaloTriunfo().getMedianas()>=1 && getMano().getPaloTriunfo().size()>1)
+			   {
+				   if (getMano().getPaloTriunfo().DamePrimeraCarta(false).getECarta()!= eCarta.SIETE)
+				   {
+					   rtn=getMano().getPaloTriunfo().get(0);  					   
+				   }
+				   else if ((getMano().getPaloTriunfo().get(1).getECarta()== eCarta.CABALLO) && (getMano().getPaloTriunfo().size()> 2))
+				   {
+					   rtn=getMano().getPaloTriunfo().get(1); 
+			       }
+				   else
+				   {
+					   rtn=Descarte();
+				   }  
+			   }
+			   else 
+			   { /*si no podemos, nos descartamos*/
+				   rtn=Descarte();
+		       }
+		       yaesta=true;
+		   }
+		   if(!yaesta)
+		   {
+			   if (vaNuestra() || (getGloval().getJugada().get(1).getPaloCarta()!=getEstado().getPaloTriunfo()))
+			   {
+				   rtn=Descarte();
+				   yaesta=true;
+			   }
+			   else
+			   {
+				   rtn = puedoMontar(getGloval().getJugada().get(1),7);
+				   yaesta=true;
+			   }
+			   if (getMano().getPaloTriunfo().size()>1 && getMano().getPaloTriunfo().getMedianas()>=1 && getEstado().getJugadaActual().Contar()>= 10)
+			   {
+				     if (getMano().getPaloTriunfo().DamePrimeraCarta(false).getECarta()!= eCarta.SIETE)
+				     {
+				    	rtn=getMano().getPaloTriunfo().get(0); 
+				        yaesta = true;
+				     }
+				     else if (getMano().getPaloTriunfo().DamePrimeraCarta(false).getECarta()== eCarta.CABALLO && getMano().getPaloTriunfo().size()>2)
+				     {
+				    	 rtn=getMano().getPaloTriunfo().get(1); 
+					     yaesta = true;
+				     }
+				}
+				if(!yaesta) 
+				{ 
+					rtn=Descarte();
+					yaesta=true;
+				}
+			  					   
+		   }	    
+	 }	
+	 else if (getEstado().getTurnoActual() == 4)		 
+	 {	 
+		if( getEstado().getNum_ronda() == 4 && getEstado().getNivel() == 3 && vaNuestra() && getEstado().getTriunfo().getPosCarta()>=eCarta.SOTA.getPos() && getGloval().getJugada().Contar()<15)
+		{
+			rtn=Descarte();
+			yaesta=true;
+		}
+		if(!yaesta && vaNuestra())
+		{
+			 Iterator<CPalo> itPalo=getMano().getPalos().iterator();
+			   while(!yaesta && itPalo.hasNext())
+			   {
+				   CPalo p=itPalo.next();
+				   if(p.size()>0)
+				   {			
+					   int idx;
+					   if (p.getAs()== 1 || p.getTres()== 1)
+					   {
+						   if(p.getTres()== 1)
+							   idx=p.idxCarta(eCarta.TRES);						   
+						   else
+							   idx=p.idxCarta(eCarta.AS);							   
+						   rtn=p.get(idx);
+						   yaesta=true;
+					   }					   
+				   }			   
+			   }	
+		}
+		else if (!yaesta)
+		{
+			if ( getGloval().getJugada().get(0).getPaloCarta()== getEstado().getPaloTriunfo() &&
+					getGloval().getJugada().get(2).getPaloCarta()!= getEstado().getPaloTriunfo() &&
+					getGloval().getJugada().get(2).getPosCarta()<eCarta.TRES.getPos() && !yaesta
+			   )
+			{
+			       rtn=Descarte();
+			       yaesta = true;
+			}
+			if ( getGloval().getJugada().get(0).getPaloCarta()== getEstado().getPaloTriunfo() &&
+					getGloval().getJugada().get(2).getPaloCarta()!= getEstado().getPaloTriunfo() &&
+					getGloval().getJugada().get(2).getPosCarta()>=eCarta.TRES.getPos() && !yaesta
+			   )
+			{
+				rtn=puedoMontar(getGloval().getJugada().get(0), 5);
+				if(rtn==null)
+				{
+					rtn=Descarte();
+					yaesta=true;
+				}
+				else
+					yaesta=true;
+				
+			}
+			if (getEstado().getNivel() == 3 && !yaesta && getGloval().getJugada().get(0).getPaloCarta()== getEstado().getPaloTriunfo() && getGloval().getJugada().Contar()>= 11)
+			{
+				rtn=puedoMontar(getGloval().getJugada().get(2), 5);
+				if(rtn==null)
+				{
+					rtn=Descarte();
+					yaesta=true;
+				}
+				else
+					yaesta=true;
+			}
+			if (!yaesta && getGloval().getJugada().get(2).getPaloCarta() == getEstado().getPaloTriunfo())
+			{
+				rtn=Descarte();
+				yaesta=true;
+			}
+			if (!yaesta && getMano().tieneCarta(getGloval().getJugada().get(0).getPaloCarta(), eCarta.AS))
+			{
+			    int idx=getMano().idxCarta(getGloval().getJugada().get(0).getPaloCarta(), eCarta.AS);
+			    rtn=getMano().get(idx);				
+			    yaesta = true;
+			}
+			if (!yaesta && getMano().tieneCarta(getGloval().getJugada().get(0).getPaloCarta(), eCarta.TRES)
+					&& getGloval().getJugada().get(0).getECarta()!=eCarta.AS 
+					&& (getGloval().getJugada().get(0).getPaloCarta()!=getGloval().getJugada().get(2).getPaloCarta() || (getGloval().getJugada().get(0).getPaloCarta()==getGloval().getJugada().get(2).getPaloCarta() && getGloval().getJugada().get(2).getECarta()!=eCarta.AS))
+				)
+			{
+				int idx=getMano().idxCarta(getGloval().getJugada().get(0).getPaloCarta(), eCarta.TRES);
+			    rtn=getMano().get(idx);				
+			    yaesta = true;	
+			}
+			CartaAux = cartaMayor(getGloval().getJugada().get(0),getGloval().getJugada().get(2),getEstado().getPaloTriunfo())? getGloval().getJugada().get(0) :getGloval().getJugada().get(2);
+			if (!yaesta && getGloval().getJugada().Contar()>= 8)
+			{
+				rtn=puedoMontar(CartaAux, 5);
+				if(rtn!=null)
+				{
+					yaesta=true;
+				}				
+			}
+			if (getEstado().getNivel()==3 && !yaesta && getGloval().getJugada().Contar()>= 10 && getMano().getPaloTriunfo().size()> 1 && getMano().getPaloTriunfo().getMedianas()>= 1)
+			{
+		       if (getMano().getPaloTriunfo().get(0).getECarta()!= eCarta.SIETE || getEstado().getTriunfo().getPosCarta()<6)
+		       {
+		    	   rtn=getMano().getPaloTriunfo().get(0);
+		    	   yaesta = true;
+		       }
+			}
+			if (getEstado().getNivel()==3 && !yaesta && getGloval().getJugada().Contar()>= 6 && getMano().getPaloTriunfo().size()> 1 && getMano().getPaloTriunfo().getMedianas()>= 1)
+			{
+				if (getMano().getPaloTriunfo().get(0).getECarta()!= eCarta.SIETE || getEstado().getTriunfo().getPosCarta()<6)
+		        {
+		    	   rtn=getMano().getPaloTriunfo().get(0);
+		    	   yaesta = true;
+		        }
+			}
+			if(!yaesta) 
+			{ 
+				rtn=Descarte();
+				yaesta=true;
+			}
+		}
 	 }
 	}
+	if(!yaesta) 
+	{ 
+		rtn=Descarte();
+		yaesta=true;
+	}
+	return rtn;	   
 
-
-}
+	}
 }
