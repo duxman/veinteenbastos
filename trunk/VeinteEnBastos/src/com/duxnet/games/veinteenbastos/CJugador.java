@@ -9,7 +9,7 @@ import com.duxnet.games.veinteenbastos.IA.CEstado;
 import com.duxnet.games.veinteenbastos.IA.CIA;
 import com.duxnet.games.veinteenbastos.enums.ePosicion;
 
-public class CJugador extends CEstado
+public class CJugador extends CEstado implements Comparable<CJugador>
 {
 	private String m_Nombre;
 	private int m_NumeroJugador;
@@ -21,8 +21,9 @@ public class CJugador extends CEstado
 	private Point p;
 	private Point c;
 	private CIA MiCerebro;
+	private int m_Turno;
 	
-	public CJugador(String n,int nj,boolean r,ePosicion e)
+	public CJugador(String n,int nj,boolean r,ePosicion e,int turno)
 	{				
 		super();
 		c=getGlogal().getDimCartas();
@@ -32,7 +33,9 @@ public class CJugador extends CEstado
 		setPosicion(e);
 		setMano(new CMano());
 		setLugar(new Point());
-		MiCerebro= new CIA(this);		
+		setTurno(turno);
+		if(!isReal())
+			MiCerebro= new CIA(this);		
 	}
 	public void Procesando(CCarta c)
 	{		
@@ -40,8 +43,10 @@ public class CJugador extends CEstado
 		///Partimos de la premisa que con mas datos el sitema elegira mejor la carta a tirar
 		MiCerebro.ActualizarJugada(c);
 	}
-	public void MeToca()
+	public CCarta MeToca()
 	{
+		return MiCerebro.TirarCarta();
+		
 		///Implementar los metodos de juego de los jugadores;		
 	}
 	public void Pintar(Canvas canvas)
@@ -121,5 +126,20 @@ public class CJugador extends CEstado
 	}
 	private void setLugar(Point lugar) {
 		m_lugar = lugar;
+	}
+	public int compareTo(CJugador another) 
+	{
+		if (this.getTurno()== another.getTurno())
+            return 0;
+        else if (this.getTurno()> another.getTurno())
+            return 1;
+        else
+            return -1;
+	}
+	public int getTurno() {
+		return m_Turno;
+	}
+	public void setTurno(int turno) {
+		m_Turno = turno;
 	}
 }

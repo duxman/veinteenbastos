@@ -4,16 +4,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 
-public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Callback
+public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Callback,Runnable
 {
-
-
-
 	private int AltoScreen;
 	private int AnchoScreen;
 	
@@ -22,24 +21,28 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
 	private Bitmap bmpBarajaCompleta;
 	private Bitmap bmpFondoCarta;
 	private Bitmap bmpTapete;
-	
 	private SurfaceHolder holder;
+	private GlobalVar m_global;
 	
 	public CVeinteEnBastosView(Context context,int altoscr,int anchoscr) 
 	{
-		super(context);
-		init( altoscr, anchoscr);
+		super(context);		
+		init( altoscr, anchoscr);		
 	}
 		
 	private void init(int altoscr,int anchoscr)
 	{
 		holder = getHolder();
         holder.addCallback(this);
+        m_global=GlobalVar.getInstance();
+        
         this.AnchoScreen = anchoscr;
 		this.AltoScreen = altoscr;		
         GlobalVar.getInstance().setDimPantalla(new Point(AnchoScreen,AltoScreen));		
-		CargarGraficos();
-		Juego=new CJuego(bmpBarajaCompleta,bmpFondoCarta,bmpTapete,2);
+		CargarGraficos();	
+		m_global.CreateJuego(bmpBarajaCompleta,bmpFondoCarta,bmpTapete,2);
+		Juego=m_global.getJuego();
+
 	}
 	
 	public void CargarGraficos()
@@ -95,6 +98,8 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
         
         Juego.Tocado(x, y);        
         render();
+        Thread thread = new Thread(this);
+        thread.start();
         return super.onTouchEvent(event);
 		
     }
@@ -103,4 +108,20 @@ public class CVeinteEnBastosView extends SurfaceView implements SurfaceHolder.Ca
     	
     	Juego.Pintar(canvas);    	    	 	    	   	    	 
     }
+
+    public void run() 
+	{
+		// TODO Auto-generated method stub    
+    	m_global.getJuego().tirada();
+		
+		handler.sendEmptyMessage(0);		
+	}	
+	private Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) 
+		{
+			render();
+			
+		}
+	};
 }

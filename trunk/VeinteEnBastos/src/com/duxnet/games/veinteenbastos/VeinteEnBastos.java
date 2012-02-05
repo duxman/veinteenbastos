@@ -3,9 +3,12 @@ package com.duxnet.games.veinteenbastos;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Window;
 
-public class VeinteEnBastos extends Activity {
+public class VeinteEnBastos extends Activity  
+{
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -19,8 +22,6 @@ public class VeinteEnBastos extends Activity {
         setRequestedOrientation(setOrientation);         
         setContentView(new CVeinteEnBastosView(this,getWindowManager().getDefaultDisplay().getHeight(),getWindowManager().getDefaultDisplay().getWidth()));
         setRequestedOrientation(setOrientation);
-        //setContentView(new CVeinteEnBastosView(this));
-        
-		
-    }
+        //setContentView(new CVeinteEnBastosView(this));        		
+    }   
 }

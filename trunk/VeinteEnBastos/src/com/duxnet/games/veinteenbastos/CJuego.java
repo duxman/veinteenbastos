@@ -2,6 +2,7 @@ package com.duxnet.games.veinteenbastos;
 
 import com.duxnet.games.veinteenbastos.enums.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import android.graphics.Bitmap;
@@ -9,14 +10,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
 
-public class CJuego 
+public class CJuego
 {		
 	private Bitmap m_bmpTapete;	
 	private Point m_DimCartas;
 	private Point m_DimPantalla; 		
 	private List<CJugador> m_Jugadores;		
 	private CCarta  m_triunfo;		
-	private GlobalVar m_global;
+	private GlobalVar m_global;	
 	
 	public CJuego(Bitmap bc,Bitmap bf,Bitmap bt,int jugadores)	
 	{		
@@ -25,39 +26,56 @@ public class CJuego
 		m_DimPantalla=new Point(GlobalVar.getInstance().getDimPantalla());		
 		m_bmpTapete=bt;		
 		m_global=GlobalVar.getInstance();					
-		m_DimCartas=m_global.getDimCartas();
+		m_DimCartas=m_global.getDimCartas();				
+		turno=(int) (Math.random()*3);		
 		
-				
-		m_Jugadores=new ArrayList<CJugador>();
-		if(jugadores==2)
-		{
-			m_Jugadores.add(new CJugador("Jugador1", 1, false,ePosicion.ARRIBA));
-			m_Jugadores.add(new CJugador("Jugador2", 2, true,ePosicion.ABAJO));
-			turno=(int) (Math.random()*1);
-		}
-		else if(jugadores==4)
-		{					
-			m_Jugadores.add(new CJugador("Jugador1", 1, false,ePosicion.ARRIBA));
-			m_Jugadores.add(new CJugador("Jugador2", 2, false,ePosicion.IZQUIERDA));
-			m_Jugadores.add(new CJugador("Jugador3", 3, false,ePosicion.ABAJO));
-			m_Jugadores.add(new CJugador("Jugador4", 4, false,ePosicion.DERECHA));
-			turno=(int) (Math.random()*3);			
-		}	
+		m_Jugadores=new ArrayList<CJugador>();	
+		m_Jugadores.add(new CJugador("Jugador1", 1, false,ePosicion.ARRIBA,0));
+		m_Jugadores.add(new CJugador("Jugador2", 2, false,ePosicion.IZQUIERDA,0));
+		m_Jugadores.add(new CJugador("Jugador3", 3, false,ePosicion.ABAJO,0));
+		m_Jugadores.add(new CJugador("Jugador4", 4, false,ePosicion.DERECHA,0));						
 		repartir(turno);
 	}
-
+	public void tirada()
+	{		
+		Iterator<CJugador> itj=m_Jugadores.iterator();
+		while(itj.hasNext())
+		{
+			CJugador j=itj.next();
+			j.setTriunfo(getCartaTriunfo());
+			j.setPaloTriunfo(getCartaTriunfo().getPaloCarta());
+		
+			if(!j.isReal())
+			{
+				CCarta c=j.MeToca();
+				j.Procesando(c);
+				m_global.getJugada().add(c);
+				Iterator<CJugador> itj1=m_Jugadores.iterator();
+				while(itj1.hasNext())
+				{
+					CJugador j1=itj1.next();
+					if(!j1.isReal())
+						j1.Procesando(c);						
+				}										
+			}					
+		}			
+	}	
 	public void Tocado(float x,float y)
 	{		
 		boolean tocado=false;
-		CCarta c = null;		
-		for(int Jugador=0;Jugador<m_Jugadores.size() && !tocado;Jugador++)
+		CCarta c = null;
+		
+		Iterator<CJugador> itj=m_Jugadores.iterator();
+		while(!tocado && itj.hasNext())
 		{
-			c=m_Jugadores.get(Jugador).getMano().Tocada(x, y);
-			if(c!=null && m_Jugadores.get(Jugador).isReal())
+			CJugador j=itj.next();
+			if(j.isReal())
 			{
-				tocado=true;				
-			}
-		}		
+				c=j.getMano().Tocada(x, y);
+				if(c!=null)
+					tocado=true;
+			}					
+		}			
 		if(!tocado && getBaraja().Tocada(x, y)!=null)
 		{
 			c=getBaraja().DamePrimeraCarta(false);
@@ -147,11 +165,13 @@ public class CJuego
 				if(JugadorTurno>=m_Jugadores.size()) JugadorTurno=0;													
 				for(int carta=0;carta<3;carta++)
 				{
+					m_Jugadores.get(JugadorTurno).setTurno(JugadorTurno);
 					m_Jugadores.get(JugadorTurno).getMano().add(getBaraja().DamePrimeraCarta(true));					
 				}
 				JugadorTurno++;
 			}		
 		}
+		Collections.sort(m_Jugadores);
 		setTriunfo(getBaraja().DamePrimeraCarta(true));
 	}
 	public void CortarBaraja()
@@ -205,4 +225,5 @@ public class CJuego
 	private void setTriunfo(CCarta triunfo) {
 		m_triunfo = triunfo;
 	}
+
 }
