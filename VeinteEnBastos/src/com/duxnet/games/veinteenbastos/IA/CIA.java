@@ -43,32 +43,34 @@ public class CIA
 	{
 		getMano().remove(Carta); 				 		
 	}
-	public void TirarCarta(CCarta Carta)
+	public CCarta TirarCarta()
 	{
-	/*	getEstado().miTurno=getEstado().getTurno();
-		if (getEstado().getTurno() <=2 )
+		CCarta Carta;
+		getEstado().setMiTurno(getEstado().getTurnoActual());
+		if (getEstado().getTurnoActual() <=2 )
 		{
-			getEstado().getTurno()Comp=getEstado().miTurno+2;
+			getEstado().setTurnoComp(getEstado().getMiTurno()+2);
 		}					
-		else if (getEstado().getTurno() >= 3)
+		else if (getEstado().getTurnoActual() >= 3)
 		{			
-			getEstado().getTurno()Comp = getEstado().miTurno-2;
-			getEstado().cartaComp=getEstado().Mesa.get(getEstado().getTurno()Comp-1);
+			getEstado().setTurnoComp(getEstado().getMiTurno()-2);			
+			getEstado().setCartaComp(getGloval().getJugada().get(getEstado().getTurnoComp()));					
 		}						 
 		
-		if (!getEstado().ultimas && !getEstado().vueltas)
+		if (!getEstado().isUltimas() && !getEstado().isVueltas())
 		 {
-		   Idas(Carta);  //printf("idas\n");
+			Carta=VoyDeIdas();  //printf("idas\n");
 		 }
-		 else if (getEstado().ultimas) 
+		 else if (getEstado().isUltimas()) 
 		 {
-		   Arrastre(Carta); //printf("arrastre\n");
+			 Carta=VoyDeIdas();// Arrastre(Carta); //printf("arrastre\n");
 		 }
 		 else{
-		   Vueltas(Carta);  //printf("vueltas\n");
+			 Carta=VoyDeIdas();//Vueltas(Carta);  //printf("vueltas\n");
 		 }		 
 		 //printf("carta echada: %c%c\n",Carta.getPaloCarta(),Carta->valor);
-		 QuitarCarta(Carta);*/
+		 QuitarCarta(Carta);
+		 return Carta;
 	}
 	public int TriunfosEnMesa()
 	{		

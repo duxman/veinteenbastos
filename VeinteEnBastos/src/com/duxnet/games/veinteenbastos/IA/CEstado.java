@@ -45,82 +45,82 @@ public class CEstado
 	private void setGlogal(GlobalVar glogal) {
 		m_Glogal = glogal;
 	}
-	CJugada getJugadaActual() {
+	public CJugada getJugadaActual() {
 		return JugadaActual;
 	}
-	void setJugadaActual(CJugada jugadaActual) {
+	public void setJugadaActual(CJugada jugadaActual) {
 		JugadaActual = jugadaActual;
 	}
-	int getTurnoActual() {
+	public int getTurnoActual() {
 		return TurnoActual;
 	}
-	void setTurnoActual(int turnoActual) {
+	public void setTurnoActual(int turnoActual) {
 		TurnoActual = turnoActual;
 	}
-	int getMiTurno() {
+	public int getMiTurno() {
 		return miTurno;
 	}
-	void setMiTurno(int miTurno) {
+	public void setMiTurno(int miTurno) {
 		this.miTurno = miTurno;
 	}
-	int getTurnoComp() {
+	public int getTurnoComp() {
 		return turnoComp;
 	}
-	void setTurnoComp(int turnoComp) {
+	public void setTurnoComp(int turnoComp) {
 		this.turnoComp = turnoComp;
 	}
 	CCarta getCartaComp() {
 		return cartaComp;
 	}
-	void setCartaComp(CCarta cartaComp) {
+	public void setCartaComp(CCarta cartaComp) {
 		this.cartaComp = cartaComp;
 	}
-	int getJugadaTriunfo() {
+	public int getJugadaTriunfo() {
 		return JugadaTriunfo;
 	}
-	void setJugadaTriunfo(int jugadaTriunfo) {
+	public void setJugadaTriunfo(int jugadaTriunfo) {
 		JugadaTriunfo = jugadaTriunfo;
 	}
-	int getnTriunfosIniciales() {
+	public int getnTriunfosIniciales() {
 		return nTriunfosIniciales;
 	}
-	void setnTriunfosIniciales(int nTriunfosIniciales) {
+	public void setnTriunfosIniciales(int nTriunfosIniciales) {
 		this.nTriunfosIniciales = nTriunfosIniciales;
 	}
-	CCarta getTriunfo() {
+	public CCarta getTriunfo() {
 		return Triunfo;
 	}
-	void setTriunfo(CCarta triunfo) {
+	public void setTriunfo(CCarta triunfo) {
 		Triunfo = triunfo;
 	}
-	ePalo getPaloTriunfo() {
+	public ePalo getPaloTriunfo() {
 		return PaloTriunfo;
 	}
-	void setPaloTriunfo(ePalo paloTriunfo) {
+	public void setPaloTriunfo(ePalo paloTriunfo) {
 		PaloTriunfo = paloTriunfo;
 	}
-	boolean isUltimas() {
+	public boolean isUltimas() {
 		return ultimas;
 	}
-	void setUltimas(boolean ultimas) {
+	public void setUltimas(boolean ultimas) {
 		this.ultimas = ultimas;
 	}
-	boolean isVueltas() {
+	public boolean isVueltas() {
 		return vueltas;
 	}
-	void setVueltas(boolean vueltas) {
+	public void setVueltas(boolean vueltas) {
 		this.vueltas = vueltas;
 	}
-	int getNum_ronda() {
+	public int getNum_ronda() {
 		return num_ronda;
 	}
-	void setNum_ronda(int num_ronda) {
+	public void setNum_ronda(int num_ronda) {
 		this.num_ronda = num_ronda;
 	}
-	int getNivel() {
+	public int getNivel() {
 		return nivel;
 	}
-	void setNivel(int nivel) {
+	public void setNivel(int nivel) {
 		this.nivel = nivel;
 	}
 	 

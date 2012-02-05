@@ -2,8 +2,10 @@ package com.duxnet.games.veinteenbastos;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.os.Handler;
+import android.os.Message;
 
-public class GlobalVar 
+public class GlobalVar
 {
 	private static final int BMP_ROWS = 4;
 	private static final int BMP_COLUMNS = 10;
@@ -54,13 +56,6 @@ public class GlobalVar
 	{
 		m_Baraja=new CBaraja(bc, bf);
 	}
-	public void setBaraja(CBaraja baraja) 
-	{
-		if(m_Baraja==null)
-			m_Baraja=new CBaraja(baraja.getBarajaCompleta(), baraja.getReversoCarta());
-		else
-			m_Baraja=baraja;			
-	}
 	public CJugada getJugada() 
 	{
 		return m_Jugada;
@@ -78,8 +73,8 @@ public class GlobalVar
 	{
 		Point DimCartas= new Point((bc.getWidth() / BMP_COLUMNS),(bc.getHeight() / BMP_ROWS));
 		setDimCartas(DimCartas);
-		
+		setBaraja(bc, bf);		
 		m_juego = new CJuego(bc, bf, bt, jugadores);						
-	}	
+	}
 }
 
